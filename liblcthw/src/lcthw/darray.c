@@ -4,7 +4,7 @@
 DArray* DArray_create(size_t element_size, size_t initial_max)
 {
     DArray* array = NULL;
-    //check(element_size > 0, "Element size of zero must be wrong.");
+    check(element_size > 0, "Element size of zero must be wrong.");
     check(initial_max > 0, "You must set an initial max > 0");
     array = malloc(sizeof(DArray));
     check_mem(array);
@@ -117,7 +117,7 @@ error:
 void* DArray_pop(DArray* array)
 {
     DArray_check(array);
-    check(array->end - 1 >= 0, "Attempted to pop from empty array.");
+    check(array->end > 0, "Attempted to pop from empty array.");
     void* element = DArray_remove(array, array->end - 1);
     array->end--;
     if(DArray_end(array) > (int)array->expand_rate &&
@@ -127,4 +127,76 @@ void* DArray_pop(DArray* array)
     return element;
 error:
     return NULL;
+}
+
+DArray* DArray_copy(DArray* array)
+{
+    DArray_check(array);
+    DArray* result = DArray_create(array->element_size,
+                                array->max);
+    result->expand_rate = array->expand_rate;
+    result->end = array->end;
+    int i = 0;
+    for(i = 0; i < array->end; i++) {
+        if(array->contents[i] != NULL) {
+            result->contents[i] = array->contents[i];
+        }
+    }
+    return result;
+error:
+    return NULL;
+}
+
+void* DArray_fpop(DArray* array)
+{
+    DArray_check(array);
+    void* result = DArray_remove(array, 0);
+    int i = 0;
+    for(i = 0; i < array->end; i++) {
+        array->contents[i] = array->contents[i+1];
+    }
+    array->end--;
+    DArray_check(array);
+    return result;
+error:
+    return NULL;
+}
+
+void DArray_print(DArray* array)
+{
+    printf("Printing DArray %p:\n", array);
+    int i = 0;
+    printf("\tEnd: %i\tMax: %i\n\tElement Size: %d\tExpand Rate: %d\n",
+            array->end, array->max, array->element_size, array->expand_rate);
+    for(i = 0; (i < 30) && (i < array->end); i++) {
+        printf("\t%i:\t%s\n", i, (char*)array->contents[i]);
+    }
+    //for(i = 0; (i < 30) && (i < array->end); i++) {
+    //    printf("\t%i:\t%p\n", i, array->contents[i]);
+    //}
+}
+
+void DArray_print_contents(DArray* array)
+{
+    printf("Contants of DArray %p:\n", array);
+    int i = 0;
+    for(i = 0; (i < 30) && (i < array->end); i++) {
+        printf("\t%i:\t%p\n", i, array->contents[i]);
+    }
+}
+
+void DArray_debug(DArray* array)
+{
+#ifdef DEBUG
+    fprintf(stderr, "Contents of DArray %p:\n", array);
+    int i = 0;
+    fprintf(stderr, "\tEnd: %i\tMax: %i\n\tElement Size: %d\tExpand Rate: %d\n",
+            array->end, array->max, array->element_size, array->expand_rate);
+    for(i = 0; (i < 30) && (i < array->end); i++) {
+        fprintf(stderr, "\t%i:\t%s\n", i, (char*)array->contents[i]);
+    }
+#else
+    array = array;
+    return;
+#endif
 }

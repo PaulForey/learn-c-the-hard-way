@@ -16,30 +16,19 @@ do
     then
         echo $DASH_RULE
         echo "Running $i..."
-        if [ -n "$MEMTEST" ]
+        if $MEMTEST ./$i 2>> test/tests.log
         then
-            if $MEMTEST ./$i 2>> test/tests.log
-            then
-                echo "$i passed."
-            else
-                echo "ERROR in $i."
-                ((ERRORS++))
-                break
-            fi
+            echo "$i passed."
+            echo $HORIZONTAL_RULE >> test/tests.log
         else
-            if ./$i 2>> test/tests.log
-            then
-                echo "$i passed."
-            else
-                echo "Error in $i."
-                ((ERRORS++))
-            fi
+            echo "ERROR in $i."
+            ((ERRORS++))
+            break
         fi
     fi
 done
 
-# Finish off the log and the output:
-echo $HORIZONTAL_RULE >> test/tests.log
+# Finish off the output:
 echo $DASH_RULE
 
 # If there were errors, show the log and exit with an error code:

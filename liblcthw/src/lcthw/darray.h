@@ -28,6 +28,7 @@ void DArray_clear_destroy(DArray* array);
 #define DArray_check(A) \
     check((A) != NULL, "DArray is NULL!"); \
     check((A)->contents != NULL, "DArray's content pointer is NULL!"); \
+    check((A)->element_size > 0, "Element size is zero or smaller!"); \
     check((A)->end >= 0, "DArray's end is below 0!"); \
     check((A)->max >= 0, "DArray's max is below zero!"); \
     check((A)->max >= (A)->end, "DArray's max is smaller than it's end!");
@@ -59,5 +60,11 @@ static inline void* DArray_new(DArray* array)
 error:
     return NULL;
 }
+
+void* DArray_fpop(DArray* array);
+DArray* DArray_copy(DArray* array);
+void DArray_print(DArray* array);
+void DArray_debug(DArray* array);
+
 #define DArray_free(E) free((E))
 #endif // _DArray_H

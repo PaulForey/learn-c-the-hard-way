@@ -21,22 +21,37 @@ DArray* _merge_array(DArray* left, DArray* right, DArray_compare cmp)
 {
     DArray* result = DArray_create(left->element_size,
             left->max > right->max ? left->max : right->max);
+    DArray_check(left);
+    DArray_check(right);
+    DArray_check(result);
     void* element = NULL;
     while(left->end > 0 || right->end > 0) {
-        check(left->contents[0] != NULL, "left starts with NULL pointer!");
-        check(right->contents[0] != NULL, "right starts with NULL pointer!");
+        int i = 0;
+        DArray_debug(left);
+        DArray_debug(right);
+        debug("Left end: %d\tRight end: %d", left->end, right->end);
         if(left->end > 0 && right->end > 0) {
-            if(cmp(left->contents[0], right->contents[0]) <= 0) {
-                element = DArray_remove(left, 0);
+            check(left->contents[i] != NULL,
+                        "left->contents[%i] is NULL!", i);
+            check(right->contents[i] != NULL,
+                        "right->contents[%i] is NULL!", i);
+            if(cmp(&left->contents[i], &right->contents[i]) <= 0) {
+                debug("Fire left!");
+                element = DArray_fpop(left);
             } else {
-                element = DArray_remove(right, 0);
+                debug("Fire right!");
+                element = DArray_fpop(right);
             }
         } else if(left->end > 0) {
-            element = DArray_remove(left, 0);
+            debug("Fire left?");
+            element = DArray_fpop(left);
         } else if(right->end > 0) {
-            element = DArray_remove(left, 0);
+            debug("Fire right?");
+            element = DArray_fpop(right);
         } else sentinel("_merge_array shouldn't get here.");
-            DArray_push(result, element);
+        check_mem(element);
+        DArray_push(result, element);
+        i++;
     }
 
     DArray_destroy(left);
@@ -80,14 +95,13 @@ error:
     return NULL;
 }
 
-int DArray_mergesort(DArray* array, DArray_compare cmp)
+DArray* DArray_mergesort(DArray* array, DArray_compare cmp)
 {
     DArray_check(array);
     DArray* result = _merge_sort(array, cmp);
     check(result != NULL, "merge sort failed.");
-    DArray_destroy(array);
-    array = result;
-    return 0;
+    DArray_check(result);
+    return result;
 error:
-    return 1;
+    return NULL;
 }
