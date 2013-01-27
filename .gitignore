@@ -6,4 +6,5 @@
 !*/
 !*.dat
 !*.test
+!*.md
 !Makefile
