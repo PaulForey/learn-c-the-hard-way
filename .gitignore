@@ -1,20 +1,8 @@
-# Vim backup files
-*~
+# Ignore all...
+*
 
-# Object files
-*.o
-
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
+# ...except
+!*.c
+!*/
+!*.dat
+!Makefile
