@@ -1,6 +1,8 @@
 #ifndef _shell_h
 #define _shell_h
 
+#include <unistd.h>
+typedef __off64_t off64_t;
 #include <apr_thread_proc.h>
 #define MAX_COMMAND_ARGS 100
 

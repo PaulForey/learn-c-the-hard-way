@@ -1,4 +1,4 @@
-PREFIX?=/usr
+PREFIX?=.
 CFLAGS=-g -Wall -I${PREFIX}/include/apr-1 \
 	   -I${PREFIX}/include/apr-util-1
 LDFLAGS=-L${PREFIX}/apr/lib -lapr-1 -pthread -laprutil-1

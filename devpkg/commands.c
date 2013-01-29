@@ -1,3 +1,6 @@
+#include <unistd.h>
+// This is a horrible hack and shouldn't be seen by anyone:
+typedef __off64_t off64_t;
 #include <apr_uri.h>
 #include <apr_fnmatch.h>
 #include <unistd.h>

@@ -1,3 +1,5 @@
+#include <unistd.h>
+typedef __off64_t off64_t;
 #include <stdio.h>
 #include <apr_general.h>
 #include <apr_getopt.h>
@@ -24,7 +26,7 @@ int main(int argc, const char* argv[])
 	enum CommandType request = COMMAND_NONE;
 
 	rv = apr_getopt_init(&opt, p, argc, argv);
-	while(apr_getopt(otp, "I:Lc:m:i:d:SF:B:",
+	while(apr_getopt(opt, "I:Lc:m:i:d:SF:B:",
 								&ch, &optarg) == APR_SUCCESS) {
 		switch(ch) {
 			case 'I':
@@ -67,7 +69,20 @@ int main(int argc, const char* argv[])
 		case COMMAND_FETCH:
 			check(url, "You must at least give a URL.");
 			Command_fetch(p, url, 1);
+			log_info("Downloaded to %s and in /tmp/", BUILD_DIR);
+			break;
 		case COMMAND_BUILD:
+			check(url, "You must at least give a URL.");
 			Command_build(p, url, config_opts, make_opts, install_opts);
 			break;
-			case 
+		case COMMAND_INIT:
+			rv = DB_init();
+			check(rv == 0, "Failed to make the database.");
+			break;
+		default:
+			sentinel("Invalid command given.");
+	}
+	return 0;
+error:
+	return -1;
+}

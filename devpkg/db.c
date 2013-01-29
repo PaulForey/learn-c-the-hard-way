@@ -1,5 +1,7 @@
 #include <unistd.h>
-#include "apr_errno.h"
+typedef __off64_t off64_t;
+
+#include <apr_errno.h>
 #include <apr_file_io.h>
 #include "db.h"
 #include "bstrlib.h"
