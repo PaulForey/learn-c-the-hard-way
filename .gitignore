@@ -1,9 +1,11 @@
+# Ignore all...
 *
+
+# ...except
 !*.c
-!*.h
 !*/
-!*.sh
-!*.md
 !*.dat
 !*.txt
+!*.test
+!*.md
 !Makefile
