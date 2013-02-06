@@ -81,9 +81,9 @@ int DB_init()
 		check(rc == APR_SUCCESS, "Failed to make database dir: %s",
 				DB_DIR);
 	}
-	if(access(DB_DIR, W_OK) == -1) {
+	if(access(DB_FILE, W_OK) == -1) {
 		FILE* db = DB_open(DB_FILE, "w");
-		check(db, "Cannot open databae: %s", DB_FILE);
+		check(db, "Cannot open database: %s", DB_FILE);
 		DB_close(db);
 	}
 
@@ -98,7 +98,7 @@ int DB_list()
 {
 	bstring data = DB_load();
 	check(data, "Failed to read load: %s", DB_FILE);
-	printf("%s", bdata(data));
+	printf("devpkg database:\n%s", bdata(data));
 	bdestroy(data);
 	return 0;
 error:

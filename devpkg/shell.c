@@ -30,6 +30,11 @@ int Shell_exec(Shell template, ...)
 			}
 		}
 	}
+	
+	debug("%s", template.args[0]);
+	for(i = 1; template.args[i] != NULL; i++) {
+		debug("\t%s", template.args[i]);
+	}
 
 	check(argcount == 0, "Failed to replace all arguments: %d", argcount);
 
