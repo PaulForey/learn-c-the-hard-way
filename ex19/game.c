@@ -112,7 +112,7 @@ char get_one_char()
 	return first;
 }
 
-void look_around(Room* location)
+void print_possible_rooms(Room* location)
 {
 	// Hopefully there's a better way to do this,
 	// but grammar is annoying so maybe there isn't.
@@ -158,6 +158,26 @@ void look_around(Room* location)
 		}
 		// This seems like a sensible idea:
 		assert(room_count == 0);
+	}
+}
+
+void look_around(Room* location)
+{
+	//First describe the room:
+	printf("You are in the %s.\n", location->proto.description);
+	print_possible_rooms(location);
+	if(location->bad_guy) {
+		if(location->bad_guy->proto.description[0] == 'a' ||
+		  location->bad_guy->proto.description[0] == 'e' ||
+		  location->bad_guy->proto.description[0] == 'i' ||
+		  location->bad_guy->proto.description[0] == 'o' ||
+		  location->bad_guy->proto.description[0] == 'u') {
+			printf("There's an %s in here!\n",
+						location->bad_guy->proto.description);
+		} else {
+			printf("There's a %s in here!\n",
+						location->bad_guy->proto.description);
+		}
 	}
 }
 

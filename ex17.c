@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include "dbg.h"
 
 //#define MAX_DATA 512
 //#define MAX_ROWS 100
@@ -10,58 +11,48 @@
 struct Address {
 	int id;
 	int set;
-	char name[512];
-	char email[];
+	char* name;
+	char* email;
 };
 
 struct Database {
 	int max_data;
 	int max_rows;
-	struct Address rows[];
+	struct Address* rows;
 };
 
 struct Connection {
-	FILE *file;
-	struct Database *db;
+	FILE* file;
+	struct Database* db;
 };
 
 // A quick function declaration
-void Database_close (struct Connection *conn);
+void Database_close(struct Connection *conn);
 
-void die (struct Connection *conn, const char *message)
-{
-	if (errno) {
-		perror(message);
-	} else {
-		printf("ERROR: %s\n", message);
-	}
-	Database_close(conn);
-	exit(1);
-}
-
-void Address_print (struct Address *addr)
+void Address_print(struct Address *addr)
 {
 	printf("%d %s %s\n",
 			addr->id, addr->name, addr->email);
 }
 
-void Database_load (struct Connection *conn)
+void Database_load(struct Connection *conn)
 {
 	printf("size: %d\n", sizeof(*conn->db));
 	int rc = fread(conn->db, sizeof(*conn->db), 1, conn->file);
-	if(rc != 1)
-		die(conn, "Failed to load database.");
+error:
+	if(conn->db->rows) free(conn->db->rows);
+	if(conn->db) free(conn->db);
+	return -1;
 }
 
-struct Connection *Database_open(const char *filename, char mode, int max_rows, int max_data)
+struct Connection *Database_open(const char *filename, char mode,
+								int max_rows, int max_data)
 {
 	struct Connection *conn = malloc(sizeof(struct Connection));
-	struct Database tempdb = {max_rows, max_data};
-	if(!conn)
-		die(conn, "Memory error.");
+	if(!conn) die(conn, "Memory error.");
 	conn->db = malloc(sizeof(struct Database));
-	if(!conn->db)
-		die(conn, "Memory error.");
+	if(!conn->db) die(conn, "Memory error.");
+
 	if(mode == 'c') {
 		conn->file = fopen(filename, "w");
 	} else {
@@ -76,7 +67,7 @@ struct Connection *Database_open(const char *filename, char mode, int max_rows, 
 	return conn;
 }
 
-void Database_close (struct Connection *conn)
+void Database_close(struct Connection *conn)
 {
 	if(conn) {
 		if(conn->file)
@@ -88,7 +79,7 @@ void Database_close (struct Connection *conn)
 	printf("Database closed.\n");
 }
 
-void Database_write (struct Connection *conn)
+void Database_write(struct Connection *conn)
 {
 	printf("Writing database...\n");
 	rewind(conn->file);
@@ -110,7 +101,7 @@ void Database_write (struct Connection *conn)
 	printf("Database written.\n");
 }
 
-void Database_create (struct Connection *conn,
+void Database_create(struct Connection *conn,
 						int max_rows, int max_data)
 {
 	printf("Creating database...\n");
@@ -124,7 +115,7 @@ void Database_create (struct Connection *conn,
 	printf("Database created.\n");
 }
 
-void Database_set (struct Connection *conn, int id,
+void Database_set(struct Connection *conn, int id,
 				const char *name, const char *email)
 {
 	//printf("Setting DB entry...\n");
@@ -143,7 +134,7 @@ void Database_set (struct Connection *conn, int id,
 	//printf("DB entry set\n");
 }
 
-void Database_get (struct Connection *conn, int id)
+void Database_get(struct Connection *conn, int id)
 {
 	struct Address *addr = &conn->db->rows[id];
 	if(addr->set) {
@@ -154,14 +145,14 @@ void Database_get (struct Connection *conn, int id)
 	printf("DB entry got\n");
 }
 
-void Database_delete (struct Connection *conn, int id)
+void Database_delete(struct Connection *conn, int id)
 {
 	struct Address addr = {.id = id, .set = 0};
 	conn->db->rows[id] = addr;
 	printf("DB entry deleted\n");
 }
 
-void Database_list (struct Connection *conn)
+void Database_list(struct Connection *conn)
 {
 	printf("Printing Database...\n");
 	int i = 0;
@@ -177,7 +168,7 @@ void Database_list (struct Connection *conn)
 	printf("...Database printed.\n");
 }
 
-void Database_find (struct Connection *conn, char *target)
+void Database_find(struct Connection *conn, char *target)
 {
 	struct Database *db = conn->db;
 	struct Address *addr;
@@ -193,13 +184,13 @@ void Database_find (struct Connection *conn, char *target)
 	printf("All results found.\n");
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	if(argc < 3)
 		die(NULL, "USAGE: ex17 <dbfile> <action> [action params]");
-	char *filename = argv[1];
+	char* filename = argv[1];
 	char action = argv[2][0];
-	struct Connection *conn;
+	struct Connection* conn;
 	if(action == 'c')
 		conn = Database_open(filename, action,
 					atoi(argv[3]), atoi(argv[4]));
