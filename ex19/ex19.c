@@ -77,6 +77,7 @@ int Map_init(void *self)
 	map->location = hall;
 	return 1;
 }
+
 Object MapProto = {
 	.init = Map_init,
 	.move = Map_move,

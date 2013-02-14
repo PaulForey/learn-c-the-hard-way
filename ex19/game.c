@@ -112,7 +112,7 @@ char get_one_char()
 	return first;
 }
 
-void print_good_rooms(Room* location)
+void look_around(Room* location)
 {
 	// Hopefully there's a better way to do this,
 	// but grammar is annoying so maybe there isn't.
@@ -194,11 +194,11 @@ int process_input(Map *game)
 			game->_(attack)(game, damage);
 			break;
 		case 'l':
-			print_good_rooms(game->location);
+			look_around(game->location);
 			break;
 		case 'h':
 			printf("Available actions:\n");
-			printf("\tl: Show which directions you can go.\n");
+			printf("\tl: Look around.\n");
 			printf("\tn: Go NORTH.\n");
 			printf("\ts: Go SOUTH.\n");
 			printf("\te: Go EAST.\n");
