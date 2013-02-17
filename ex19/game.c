@@ -161,11 +161,8 @@ void print_possible_rooms(Room* location)
 	}
 }
 
-void look_around(Room* location)
+void print_current_monsters(Room* location)
 {
-	//First describe the room:
-	printf("You are in the %s.\n", location->proto.description);
-	print_possible_rooms(location);
 	if(location->bad_guy) {
 		if(location->bad_guy->proto.description[0] == 'a' ||
 		  location->bad_guy->proto.description[0] == 'e' ||
@@ -181,17 +178,25 @@ void look_around(Room* location)
 	}
 }
 
+void look_around(Room* location)
+{
+	// First describe the room:
+	printf("You are in the %s.\n", location->proto.description);
+	// Then mention any monsters that are around:
+	print_current_monsters(location);
+	// Finally, print the possible locations:
+	print_possible_rooms(location);
+}
+
 		
 
 
 
 
-int process_input(Map *game)
+int process_input(Player *game)
 {
 	printf("> ");
 	char ch = get_one_char();
-	//char ch = getchar();
-	//getchar(); // eat ENTER
 	int damage = rand() % 4;
 	switch(ch) {
 		case 'q':
