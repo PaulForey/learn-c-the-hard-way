@@ -62,6 +62,7 @@ int main(int argc, const char* argv[])
 		case COMMAND_INSTALL:
 			check(url, "You must at least give a URL.");
 			Command_install(p, url, config_opts, make_opts, install_opts);
+			log_info("Succesfully installed %s", url);
 			break;
 		case COMMAND_LIST:
 			DB_list();
@@ -74,10 +75,12 @@ int main(int argc, const char* argv[])
 		case COMMAND_BUILD:
 			check(url, "You must at least give a URL.");
 			Command_build(p, url, config_opts, make_opts, install_opts);
+			log_info("Succesfully built %s", url);
 			break;
 		case COMMAND_INIT:
 			rv = DB_init();
 			check(rv == 0, "Failed to make the database.");
+			log_info("Database made.");
 			break;
 		default:
 			sentinel("Invalid command given.");

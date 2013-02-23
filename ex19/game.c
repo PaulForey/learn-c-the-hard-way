@@ -112,7 +112,7 @@ char get_one_char()
 	return first;
 }
 
-void print_good_rooms(Room* location)
+void print_possible_rooms(Room* location)
 {
 	// Hopefully there's a better way to do this,
 	// but grammar is annoying so maybe there isn't.
@@ -161,17 +161,42 @@ void print_good_rooms(Room* location)
 	}
 }
 
+void print_current_monsters(Room* location)
+{
+	if(location->bad_guy) {
+		if(location->bad_guy->proto.description[0] == 'a' ||
+		  location->bad_guy->proto.description[0] == 'e' ||
+		  location->bad_guy->proto.description[0] == 'i' ||
+		  location->bad_guy->proto.description[0] == 'o' ||
+		  location->bad_guy->proto.description[0] == 'u') {
+			printf("There's an %s in here!\n",
+						location->bad_guy->proto.description);
+		} else {
+			printf("There's a %s in here!\n",
+						location->bad_guy->proto.description);
+		}
+	}
+}
+
+void look_around(Room* location)
+{
+	// First describe the room:
+	printf("You are in the %s.\n", location->proto.description);
+	// Then mention any monsters that are around:
+	print_current_monsters(location);
+	// Finally, print the possible locations:
+	print_possible_rooms(location);
+}
+
 		
 
 
 
 
-int process_input(Map *game)
+int process_input(Player *game)
 {
 	printf("> ");
 	char ch = get_one_char();
-	//char ch = getchar();
-	//getchar(); // eat ENTER
 	int damage = rand() % 4;
 	switch(ch) {
 		case 'q':
@@ -194,11 +219,11 @@ int process_input(Map *game)
 			game->_(attack)(game, damage);
 			break;
 		case 'l':
-			print_good_rooms(game->location);
+			look_around(game->location);
 			break;
 		case 'h':
 			printf("Available actions:\n");
-			printf("\tl: Show which directions you can go.\n");
+			printf("\tl: Look around.\n");
 			printf("\tn: Go NORTH.\n");
 			printf("\ts: Go SOUTH.\n");
 			printf("\te: Go EAST.\n");

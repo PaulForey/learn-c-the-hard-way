@@ -6,38 +6,38 @@
 #include <assert.h>
 #include "game.h"
 
-void *Map_move(void *self, Direction direction)
+void* Player_move(void *self, Direction direction)
 {
 	assert(self);
 	assert(direction >= 0);
 
-	Map *map = self;
-	Room *location = map->location;
-	Room *next = NULL;
+	Player* player = self;
+	Room* location = player->location;
+	Room* next = NULL;
 	next = location->_(move)(location, direction);
 	if(next) {
-		map->location = next;
+		player->location = next;
 	}
 	return next;
 }
-int Map_attack(void *self, int damage)
+int Player_attack(void *self, int damage)
 {
 	assert(self);
 	assert(damage >= 0);
 
-	Map *map = self;
-	Room *location = map->location;
+	Player *player = self;
+	Room *location = player->location;
 	return location->_(attack)(location, damage);
 }
-int Map_init(void *self)
+int Player_init(void *self)
 {
 	assert(self);
 	
-	Map *map = self;
+	Player *player = self;
 	// Make some rooms for a small map:
 	Room *hall = NEW(Room, "great hall");
 	Room *throne = NEW(Room, "throne room");
-	Room *arena = NEW(Room, "arena, with the minotaur");
+	Room *arena = NEW(Room, "arena");
 	Room *kitchen = NEW(Room, "kitchen, you have the knife now");
 	// Extra Credit: More rooms:
 	Room *alley = NEW(Room, "alleyway. It stinks here");
@@ -73,22 +73,23 @@ int Map_init(void *self)
 	outhouse->east = bedroom;
 	
 	// Start the map and the character off in the hall:
-	map->start = hall;
-	map->location = hall;
+	player->start = hall;
+	player->location = hall;
 	return 1;
 }
-Object MapProto = {
-	.init = Map_init,
-	.move = Map_move,
-	.attack = Map_attack
+
+Object PlayerProto = {
+	.init = Player_init,
+	.move = Player_move,
+	.attack = Player_attack
 };
 
 int main(int argc, char *argv[])
 {
 	// Simple way to set up the randomness:
 	srand(time(NULL));
-	// Make our map:
-	Map *game = NEW(Map, "THE HALL OF THE MINOTAUR");
+	// Make our player:
+	Player *game = NEW(Player, "THE HALL OF THE MINOTAUR");
 	printf("Welcome to... %s!\n", game->_(description));
 	printf("You enter the ");
 	game->location->_(describe)(game->location);

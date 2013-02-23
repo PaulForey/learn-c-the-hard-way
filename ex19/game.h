@@ -2,41 +2,39 @@
 #define _game_h
 #include "object.h"
 
-struct Monster {
+typedef struct Monster {
 	Object proto;
 	int hit_points;
-};
-typedef struct Monster Monster;
-int Monster_attack(void *self, int damage);
-int Monster_init(void *self);
+} Monster;
+int Monster_attack(void* self, int damage);
+int Monster_init(void* self);
 Object MonsterProto;
 
-struct Room {
+typedef struct Room {
 	Object proto;
-	Monster *bad_guy;
-	struct Room *north;
-	struct Room *south;
-	struct Room *east;
-	struct Room *west;
-};
-typedef struct Room Room;
+	Monster* bad_guy;
+	struct Room* north;
+	struct Room* south;
+	struct Room* east;
+	struct Room* west;
+} Room;
 void* Room_move(void* self, Direction direction);
 int Room_attack(void* self, int damage);
 int Room_init(void* self);
 Object RoomProto;
 
-struct Map {
+typedef struct Player {
 	Object proto;
-	Room *start;
-	Room *location;
-};
-typedef struct Map Map;
-void* Map_move(void* self, Direction direction);
-int Map_attack(void* self, int damage);
-int Map_init(void* self);
-Object MapProto;
+	Room* start;
+	Room* location;
+	char** inventory;
+} Player;
+void* Player_move(void* self, Direction direction);
+int Player_attack(void* self, int damage);
+int Player_init(void* self);
+Object PlayerProto;
 
 char get_one_char();
-int process_input(Map* game);
+int process_input(Player* game);
 
 #endif // _game_h
