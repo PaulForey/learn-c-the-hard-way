@@ -2,7 +2,7 @@ devpkg
 ======
 
 This is a utility created from Zed A. Shaw's 
-_Learn C The Hard Way_ [book][]. devpkg will download,
+_Learn C The Hard Way_ [book][]. _devpkg_ will download,
 build and install a piece of software to your computer.
 Probably.
 
