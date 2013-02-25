@@ -6,12 +6,16 @@
 #include <assert.h>
 #include "game.h"
 
-int Monster_attack (void *self, int damage)
+char* WEAPON_NAMES[4] = {
+	"Your Pulpy Fists", "A Kitchen Knife",
+	"A Sharp Sword", "A Bloodied Axe"};
+
+int Monster_attack (void* self, int damage)
 {
 	assert(self);
 	assert(damage >= 0);
 
-	Monster *monster = self;
+	Monster* monster = self;
 
 	if(monster->hit_points <= 0) {
 		printf("The %s is already dead.\n",
@@ -37,11 +41,11 @@ int Monster_attack (void *self, int damage)
 		return 1;
 	}
 }
-int Monster_init (void *self)
+int Monster_init (void* self)
 {
 	assert(self);
 
-	Monster *monster = self;
+	Monster* monster = self;
 	monster->hit_points = 10;
 	return 1;
 }
@@ -50,13 +54,13 @@ Object MonsterProto = {
 	.attack = Monster_attack
 };
 
-void *Room_move(void *self, Direction direction)
+void* Room_move(void* self, Direction direction)
 {
 	assert(self);
 	assert(direction >= 0);
 
-	Room *room = self;
-	Room *next = NULL;
+	Room* room = self;
+	Room* next = NULL;
 	if(direction == NORTH && room->north) {
 		printf("You go north, into the ");
 		next = room->north;
@@ -78,13 +82,13 @@ void *Room_move(void *self, Direction direction)
 	}
 	return next;
 }
-int Room_attack(void *self, int damage)
+int Room_attack(void* self, int damage)
 {
 	assert(self);
 	assert(damage >= 0);
 
-	Room *room = self;
-	Monster *monster = room->bad_guy;
+	Room* room = self;
+	Monster* monster = room->bad_guy;
 	if(monster) {
 		monster->_(attack)(monster, damage);
 		return 1;
@@ -114,8 +118,10 @@ char get_one_char()
 
 void print_possible_rooms(Room* location)
 {
-	// Hopefully there's a better way to do this,
-	// but grammar is annoying so maybe there isn't.
+	/**
+	 * Hopefully there's a better way to do this,
+	 * but grammar is annoying so maybe there isn't.
+	 */
 	int room_count = 0;
 
 	// First I count how many rooms I've got:
@@ -164,22 +170,31 @@ void print_possible_rooms(Room* location)
 void print_current_monsters(Room* location)
 {
 	if(location->bad_guy) {
+		char* ending_text;
+		if(location->bad_guy->hit_points > 0) {
+			ending_text = "!\n";
+		} else {
+			ending_text = "... but it's dead.\n";
+		}
 		if(location->bad_guy->proto.description[0] == 'a' ||
 		  location->bad_guy->proto.description[0] == 'e' ||
 		  location->bad_guy->proto.description[0] == 'i' ||
 		  location->bad_guy->proto.description[0] == 'o' ||
 		  location->bad_guy->proto.description[0] == 'u') {
-			printf("There's an %s in here!\n",
-						location->bad_guy->proto.description);
+			printf("There's an %s in here%s",
+						location->bad_guy->proto.description,
+						ending_text);
 		} else {
-			printf("There's a %s in here!\n",
-						location->bad_guy->proto.description);
+			printf("There's a %s in here%s",
+						location->bad_guy->proto.description,
+						ending_text);
 		}
 	}
 }
 
 void look_around(Room* location)
 {
+	printf("You look around...\n");
 	// First describe the room:
 	printf("You are in the %s.\n", location->proto.description);
 	// Then mention any monsters that are around:
@@ -188,12 +203,27 @@ void look_around(Room* location)
 	print_possible_rooms(location);
 }
 
-		
+void show_map(Player* player)
+{
+	printf("Your map:\n");
+}
 
 
+void print_inventory(Player* player)
+{
+	printf("You currently have:\n");
+	printf("\t - %s.\n", WEAPON_NAMES[player->weapon]);
+}
 
+void change_weapon(Player* player, WEAPONS new_weapon)
+{
+	player->weapon = new_weapon;
+	printf("You got a new weapon!\n");
+	printf("You got: %s.\n",
+				WEAPON_NAMES[player->weapon]);
+}
 
-int process_input(Player *game)
+int process_input(Player* player)
 {
 	printf("> ");
 	char ch = get_one_char();
@@ -204,23 +234,28 @@ int process_input(Player *game)
 			return 0;
 			break;
 		case 'n':
-			game->_(move)(game, NORTH);
+			player->_(move)(player, NORTH);
 			break;
 		case 's':
-			game->_(move)(game, SOUTH);
+			player->_(move)(player, SOUTH);
 			break;
 		case 'e':
-			game->_(move)(game, EAST);
+			player->_(move)(player, EAST);
 			break;
 		case 'w':
-			game->_(move)(game, WEST);
+			player->_(move)(player, WEST);
 			break;
 		case 'a':
-			game->_(attack)(game, damage);
+			player->_(attack)(player, damage);
+			break;
+		case 'i':
+			print_inventory(player);
 			break;
 		case 'l':
-			look_around(game->location);
+			look_around(player->location);
 			break;
+		case 'm':
+			show_map(player);
 		case 'h':
 			printf("Available actions:\n");
 			printf("\tl: Look around.\n");
