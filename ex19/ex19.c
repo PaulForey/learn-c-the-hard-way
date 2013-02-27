@@ -6,7 +6,7 @@
 #include <assert.h>
 #include "game.h"
 
-void* Player_move(void *self, Direction direction)
+void* Player_move(void* self, Direction direction)
 {
 	assert(self);
 	assert(direction >= 0);
@@ -18,9 +18,12 @@ void* Player_move(void *self, Direction direction)
 	if(next) {
 		player->location = next;
 	}
+	if(next->weapon > 0) {
+		change_weapon(self, next->weapon);
+	}
 	return next;
 }
-int Player_attack(void *self, int damage)
+int Player_attack(void* self, int damage)
 {
 	assert(self);
 	assert(damage >= 0);
@@ -33,16 +36,17 @@ int Player_init(void *self)
 {
 	assert(self);
 	
-	Player *player = self;
+	Player* player = self;
 	// Make some rooms for a small map:
-	Room *hall = NEW(Room, "great hall");
-	Room *throne = NEW(Room, "throne room");
-	Room *arena = NEW(Room, "arena");
-	Room *kitchen = NEW(Room, "kitchen, you have the knife now");
+	Room* hall = NEW(Room, "great hall");
+	Room* throne = NEW(Room, "throne room");
+	Room* arena = NEW(Room, "arena");
+	Room* kitchen = NEW(Room, "kitchen, you have the knife now");
+	kitchen->weapon = 1;
 	// Extra Credit: More rooms:
-	Room *alley = NEW(Room, "alleyway. It stinks here");
-	Room *outhouse = NEW(Room, "outhouse, and it's not a clean one");
-	Room *bedroom = NEW(Room, "royal bedchambers. It stinks here");
+	Room* alley = NEW(Room, "alleyway. It stinks here");
+	Room* outhouse = NEW(Room, "outhouse, and it's not a clean one");
+	Room* bedroom = NEW(Room, "royal bedchambers. It stinks here");
 
 	// Put the bad guy in the arena:
 	arena->bad_guy = NEW(Monster, "evil minotaur");
