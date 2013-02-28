@@ -4,6 +4,7 @@
 # ...except
 !*/
 !*.c
+!*.h
 !*.dat
 !*.txt
 !*.test
