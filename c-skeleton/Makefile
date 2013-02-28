@@ -1,3 +1,15 @@
+# For detecting the os:
+UNAME := $(shell uname)
+
+ifeq ($(UNAME), Linux)
+	TESTSCRIPT=./tests/runtests.sh
+endif
+ifeq ($(UNAME), MINGW32_NT-6.1)
+	SHELL=powershell
+	TESTSCRIPT=powershell -executionpolicy remotesigned ./tests/runtests.ps1
+endif
+
+
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBEG $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
@@ -34,7 +46,7 @@ build:
 .PHONY: tests
 tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
-	./tests/runtests.sh
+	$(TESTSCRIPT)
 
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
@@ -44,8 +56,8 @@ valgrind:
 clean:
 	rm -rf build $(OBJECTS) $(TESTS)
 	rm -f tests/tests.log
-	find . -name "*.gc*" -exec rm {} \;
-	rm -rf 'find . -name "*.dSYM" -print'
+#find . -name "*.gc*" -exec rm {} \;
+#rm -rf 'find . -name "*.dSYM" -print'
 
 # The Install
 install: all
@@ -56,4 +68,4 @@ install: all
 BADFUNCS='[^_.>a-zA-Z0-9] (str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
 check:
 	@echo Files with potentially dangerous functions:
-	@select-string $(BADFUNCS) $(SOURCES) || true
+	@grep $(BADFUNCS) $(SOURCES) || true

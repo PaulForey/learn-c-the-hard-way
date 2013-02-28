@@ -2,10 +2,12 @@
 *
 
 # ...except
-!*.c
 !*/
+!*.c
 !*.dat
 !*.txt
 !*.test
 !*.md
+!*.ps1
+!*.sh
 !Makefile
