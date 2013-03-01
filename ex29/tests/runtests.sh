@@ -4,7 +4,7 @@ touch tests/tests.log
 
 echo "Running unit tests:"
 
-for i in tests/*_tests
+for i in tests/*_test
 do
     if test -f $i
     then
@@ -12,7 +12,7 @@ do
         then
             echo $i PASS
         else
-            echo "ERROR in test $i: Here's tests/tests.log"
+            echo "ERROR in $i. Here's tests/tests.log:"
             echo "------------"
             tail tests/tests.log
             exit 1

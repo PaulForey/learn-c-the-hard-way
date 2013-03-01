@@ -20,7 +20,8 @@ SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 TEST_SRC=$(wildcard tests/*_test.c)
-TESTS=$(patsubst %.c,%,$(TEST_SRC))
+#TESTS=$(patsubst %.c,%,$(TEST_SRC))
+TESTS=tests/ex29_linux_test
 
 TARGET=build/libex29.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
@@ -46,9 +47,8 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TARGET) 
+tests: CFLAGS += $(TARGET) -ldl
 tests: $(TESTS)
-	cp $(SO_TARGET) ./tests/
 	@touch ./tests/tests.log
 	@$(TESTSCRIPT)
 
