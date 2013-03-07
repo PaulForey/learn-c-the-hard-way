@@ -7,20 +7,18 @@
 int test_print_a_message(HMODULE lib)
 {
     int rc = 0;
+	char msg[] = "Print this message!";
     FARPROC func = GetProcAddress(lib, "print_a_message");
     check(func != NULL, "Did not find print_a_message function in the library %s", LIB_FILE);
 
-    debug("Zero");
-    rc = func("Print this message!");
-    debug("One");
+    rc = func(msg, sizeof(msg));
     check(rc == 0, "Failed to print message.");
-    debug("Two");
 
     char broken_string[4] = {'a', 'b', 'c', 'd'};
 
-    //rc = func(broken_string);
+    rc = func(broken_string, 4);
     check(rc == 0, "Failed to print message from broken string.");
-    debug("three");
+    debug("four: %d", rc);
 
     return 0;
 
@@ -31,16 +29,17 @@ error:
 int test_uppercase(HMODULE lib)
 {
     int rc = 0;
+	char msg[] = "What is all this about?";
 
     FARPROC func = GetProcAddress(lib, "uppercase");
     check(func != NULL, "Did not find uppercase function in the library %s", LIB_FILE);
 
-    rc = func("What is all this about?");
+    rc = func(msg, sizeof(msg));
     check(rc == 0, "Failed to change case.");
 
     char broken_string[4] = {'a', 'b', 'c', 'd'};
 
-    //rc = func(broken_string);
+    rc = func(broken_string, 4);
     check(rc == 0, "Failed to change case of broken string.");
 
     return 0;
@@ -52,16 +51,17 @@ error:
 int test_lowercase(HMODULE lib)
 {
     int rc = 0;
+	char msg[] = "What? What?!? Where are the CATS gone?";
 
     FARPROC func = GetProcAddress(lib, "lowercase");
     check(func != NULL, "Did not find lowercase function in the library %s", LIB_FILE);
 
-    func("What? What?!? Where are the CATS gone?");
+    rc = func(msg, sizeof(msg));
     check(rc == 0, "Failed to lower case.");
 
     char broken_string[4] = {'a', 'b', 'c', 'd'};
 
-    //func(broken_string);
+    func(broken_string, 4);
     check(rc == 0, "Failed to lower case of broken string.");
 
     return 0;
@@ -73,11 +73,12 @@ error:
 int test_fail_on_purpose(HMODULE lib)
 {
     int rc = 0;
+	char msg[] = "It just doesn't matter.";
 
     FARPROC func = GetProcAddress(lib, "fail_on_purpose");
     check(func != NULL, "Did not find fail_on_purpose function in the library %s", LIB_FILE);
 
-    func("It just doesn't matter!");
+    func(msg, sizeof(msg));
     check(rc == 0, "fail_on_purpose failed! Who have thunk it?");
 
     return 0;
@@ -90,27 +91,23 @@ int main()
 {
     int rc = 0;
 
-    debug("Hello!");
-
     HMODULE lib = LoadLibrary(TEXT(LIB_FILE));
-    debug("Error?");
     check(lib != NULL, "Failed to open the library %s", LIB_FILE);
 
     /// Start some tests:
-    //lib_function func = GetProcAddress(lib, func_to_run);
     rc = test_print_a_message(lib);
+    debug("five: %d", rc);
     check(rc == 0, "print_a_message failed it's test.");
     rc = test_uppercase(lib);
     check(rc == 0, "uppercase failed it's test.");
     rc = test_lowercase(lib);
     check(rc == 0, "lowercase failed it's test.");
     rc = test_fail_on_purpose(lib);
-    check(rc == 0, "fail_on_purpose failed it's test.");
+    check(rc == 1, "fail_on_purpose didn't fail. This is a failure.");
 
     rc = FreeLibrary(lib);
     check(rc != 0, "Failed to close %s", LIB_FILE);
 
-    debug("Goodbye!");
 
     return 0;
 

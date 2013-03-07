@@ -9,7 +9,7 @@ endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
 	TESTPAT=*_win_test
 	SHELL=powershell
-	TESTSCRIPT=powershell -executionpolicy remotesigned ./tests/runtests.ps1
+	TESTSCRIPT=powershell -executionpolicy remotesigned -NoProfile ./tests/runtests.ps1
 	SO_EXT=.dll
 endif
 
@@ -53,12 +53,15 @@ tests: $(TESTS)
 	@touch ./tests/tests.log
 	@TESTPAT=$(TESTPAT) $(TESTSCRIPT)
 
-valgrind:
+ifeq ($(UNAME), Linux)
+memtest:
 	VALGRIND="valgrind --track-origins=yes" $(MAKE)
-
-drmemory:
-	DRMEMORY="drmemory -batch" $(MAKE)
-
+endif
+ifeq ($(UNAME), MINGW32_NT-6.1)
+memtest:
+	#DRMEMORY="C:\Program Files (x86)\Dr. Memory\bin\drmemory.exe -batch " $(MAKE)
+	DRMEMORY="drmemory.exe -batch " $(MAKE)
+endif
 
 # The Cleaner
 clean:

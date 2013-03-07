@@ -4,8 +4,10 @@ Clear-Content tests/tests.log
 
 Write-Host "Running Unit Tests:"
 
-foreach($i in Get-ChildItem tests -filter "*_test.exe") {
-        $result = $DRMEMORY tests/$i > tests/tests.log
+foreach($i in Get-ChildItem tests -filter "*_win_test.exe") {
+        echo "$ENV:DRMEMORY./tests/$i"
+        $result = & "$ENV:DRMEMORY./tests/$i" 2> tests/tests.log
+        #$result = & "drmemory -batch ./tests/$i" 2> tests/tests.log
         #$result = $i > tests/tests.log
         if($result) {
                 Write-Host $i PASS

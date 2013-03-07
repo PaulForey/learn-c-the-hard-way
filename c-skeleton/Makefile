@@ -10,7 +10,7 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBEG $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
@@ -26,7 +26,7 @@ SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 # The Target Build
 all: $(TARGET) $(SO_TARGET) tests
 
-dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
+dev: CFLAGS += -DDEBUG
 dev: all
 
 $(TARGET): CFLAGS += -fPIC

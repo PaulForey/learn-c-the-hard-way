@@ -52,7 +52,6 @@ int lowercase(const char* msg, int length)
 
 	for(i = 0; i < length; i++) {
 		printf("%c", tolower(msg[i]));
-		}
 	}
     printf("\n");
 	
