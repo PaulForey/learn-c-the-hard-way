@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include "dbg.h"
 
-#define LIB_FILE "libex29"
+#define LIB_FILE "build/libex29.dll"
 
 int test_print_a_message(HMODULE lib)
 {

@@ -21,7 +21,7 @@ OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 TEST_SRC=$(wildcard tests/*_test.c)
 #TESTS=$(patsubst %.c,%,$(TEST_SRC))
-TESTS=tests/ex29_linux_test
+TESTS=tests/ex29_test
 
 TARGET=build/libex29.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
@@ -47,13 +47,16 @@ build:
 
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TARGET) -ldl
+tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
 	@touch ./tests/tests.log
 	@$(TESTSCRIPT)
 
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
+
+drmemory:
+	DRMEMORY="drmemory -batch" $(MAKE)
 
 
 # The Cleaner
