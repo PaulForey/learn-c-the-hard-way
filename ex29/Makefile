@@ -2,26 +2,27 @@
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
+	TESTPAT=*_linux_test
 	TESTSCRIPT=./tests/runtests.sh
 	SO_EXT=.so
 endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
+	TESTPAT=*_win_test
 	SHELL=powershell
 	TESTSCRIPT=powershell -executionpolicy remotesigned ./tests/runtests.ps1
 	SO_EXT=.dll
 endif
 
 
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBEG $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
-TEST_SRC=$(wildcard tests/*_test.c)
-#TESTS=$(patsubst %.c,%,$(TEST_SRC))
-TESTS=tests/ex29_test
+TEST_SRC=$(wildcard tests/$(TESTPAT).c)
+TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
 TARGET=build/libex29.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
@@ -29,7 +30,7 @@ SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 # The Target Build
 all: $(TARGET) $(SO_TARGET) tests
 
-dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
+dev: CFLAGS += -DDEBUG
 dev: all
 
 #$(TARGET): CFLAGS += -fPIC
@@ -50,10 +51,10 @@ build:
 tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
 	@touch ./tests/tests.log
-	@$(TESTSCRIPT)
+	@TESTPAT=$(TESTPAT) $(TESTSCRIPT)
 
 valgrind:
-	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
+	VALGRIND="valgrind --track-origins=yes" $(MAKE)
 
 drmemory:
 	DRMEMORY="drmemory -batch" $(MAKE)
