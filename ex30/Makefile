@@ -15,17 +15,18 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -O2 -Wall -Wextra -Isrc $(OPTFLAGS)
-LIBS=-ldl $(OPTLIBS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
+LIBS=-Linclude -lbstr -ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
+
 TEST_SRC=$(wildcard tests/$(TESTPAT).c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
-TARGET=build/libex29.a
+TARGET=build/libex30.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 
 # The Target Build

@@ -10,10 +10,7 @@ do
     then
         if $VALGRIND ./$i &> tests/tests.log
         then
-            echo "$i PASS. Here's tests/tests.log:"
-            echo "------------"
-            cat tests/tests.log
-            echo "------------"
+            echo "$i PASS."
         else
             echo "ERROR in $i. Here's tests/tests.log:"
             echo "------------"
@@ -24,4 +21,4 @@ do
     fi
 done
 
-echo ""
+#echo ""
