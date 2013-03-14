@@ -1,18 +1,18 @@
-mv tests/tests.log tests/tests.log.old
-touch tests/tests.log
+mv test/tests.log test/tests.log.old
+touch test/tests.log
 echo "Cleared test log (previous log renamed to 'tests.log.old')."
 
 echo "Running unit tests:"
 
 EXITCODE=0
 
-for i in tests/$TESTPAT
+for i in test/*_test
 do
     if test -f $i
     then
 		echo "----------------------"
 		echo "RUNNING: $i"
-        if $VALGRIND ./$i 2>> tests/tests.log
+        if $VALGRIND ./$i 2>> test/tests.log
         then
             echo "PASSED: $i"
         else

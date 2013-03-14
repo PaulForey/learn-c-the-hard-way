@@ -2,29 +2,36 @@
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-	TESTPAT=*_linux_test
-	TESTSCRIPT=./tests/runtests.sh
-	TESTFLAGS=-ldl
+	TESTSCRIPT=./test/runtests.sh
+	PLAT_LIBS=
+	EXE_EXT=
 	SO_EXT=.so
 endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
-	TESTPAT=*_win_test
-	TESTSCRIPT=powershell -executionpolicy remotesigned -NoProfile ./tests/runtests.ps1
-	TESTFLAGS=
+	TESTSCRIPT=powershell -executionpolicy remotesigned -NoProfile ./test/runtests.ps1
+	PLAT_LIBS=
+	EXE_EXE=.exe
 	SO_EXT=.dll
 endif
 
 
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
-LIBS=-Linclude -lbstr -ldl $(OPTLIBS)
+LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS)
 PREFIX?=/usr/local
 
+HEADERS=$(wildcard src/**/*.h src/*.h)
 SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
+TEST_H=$(wildcard test/**/*.h test/*.h)
+TEST_SRC=$(wildcard test/**/*_test.c test/*_test.c)
+TEST_OBJ=$(patsubst %.c,%.o,$(TEST_SRC))
+TESTS=$(patsubst %.o,%,$(TEST_OBJ))
 
-TEST_SRC=$(wildcard tests/$(TESTPAT).c)
-TESTS=$(patsubst %.c,%,$(TEST_SRC))
+INC_H=$(wildcard include/**/*.h include/*.h)
+INC_SRC=$(wildcard include/**/*.c include/*.c)
+INC_OBJ=$(patsubst %.c,%.o,$(INC_SRC))
+INCS=$(patsubst %.o,%.a,$(INC_OBJ))
 
 TARGET=build/libex30.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
@@ -36,24 +43,31 @@ dev: CFLAGS += -DDEBUG
 dev: all
 
 #$(TARGET): CFLAGS += -fPIC
-$(TARGET): build $(OBJECTS)
+$(TARGET): build $(HEADERS) $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 
 $(SO_TARGET): $(TARGET) $(OBJECTS)
-	$(CC) -shared -o $@ $(OBJECTS)
+	$(CC) -shared -o $@ $(OBJECTS) $(LIBS)
 
 build:
 	@mkdir -p build
-	@mkdir -p bin
 
+includes: $(INCS)
 
+$(INCS): $(INC_H) $(INC_OBJ)
+	ar rcs $@ $(INC_OBJ)
+	ranlib $@
+	
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TARGET) $(TESTFLAGS)
-tests: $(TESTS)
-	@touch ./tests/tests.log
-	@TESTPAT=$(TESTPAT) $(TESTSCRIPT)
+tests: CFLAGS += $(TESTFLAGS)
+tests: $(TESTS) 
+
+$(TESTS): $(TEST_H) $(TEST_OBJ)
+	$(CC) -o $@ $(TEST_OBJ) $(TARGET) $(LIBS)
+	@touch ./test/tests.log
+	$(TESTSCRIPT)
 
 ifeq ($(UNAME), Linux)
 memtest:
@@ -62,13 +76,14 @@ endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
 memtest:
 	#DRMEMORY="C:\Program Files (x86)\Dr. Memory\bin\drmemory.exe -batch " $(MAKE)
-	DRMEMORY="drmemory.exe -batch " $(MAKE)
+	DRMEMORY="drmemory -batch " $(MAKE)
 endif
 
 # The Cleaner
 clean:
-	rm -rf build $(OBJECTS) $(TESTS)
-	rm -f tests/tests.log
+	rm -rf build 
+	rm -f $(OBJECTS) $(wildcard test/*.exe test/*.o)
+	rm -f test/tests.log
 #find . -name "*.gc*" -exec rm {} \;
 #rm -rf 'find . -name "*.dSYM" -print'
 
