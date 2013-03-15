@@ -1,10 +1,9 @@
 mv test/tests.log test/tests.log.old
 touch test/tests.log
-echo "Cleared test log (previous log renamed to 'tests.log.old')."
 
 echo "Running unit tests:"
 
-EXITCODE=0
+ERRORS=0
 
 for i in test/*_test
 do
@@ -17,18 +16,19 @@ do
             echo "PASSED: $i"
         else
             echo -e "\tERROR in $i."
-            EXITCODE=1
+			((ERRORS++))
         fi
     fi
 done
 
 echo "----------------------"
-if test $EXITCODE -gt 0
+if test $ERRORS -gt 0
 then
 	echo -e "\tERRORS FOUND, here's tests/tests.log:"
-	echo "=================="
-	cat tests/tests.log
-	echo "=================="
+	echo "=============================================="
+	cat test/tests.log
+	echo "=============================================="
+	exit 1
+else
+	echo "All tests passed! You win a hot dog!"
 fi
-
-exit $EXITCODE

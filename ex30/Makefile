@@ -42,7 +42,7 @@ all: $(TARGET) $(SO_TARGET) test
 dev: CFLAGS += -DDEBUG
 dev: all
 
-#$(TARGET): CFLAGS += -fPIC
+$(TARGET): CFLAGS += -fPIC
 $(TARGET): build $(HEADERS) $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
@@ -60,14 +60,14 @@ $(INCS): $(INC_H) $(INC_OBJ)
 	ranlib $@
 	
 # The Unit Tests
-.PHONY: tests
+.PHONY: test
 test: CFLAGS += $(TESTFLAGS)
 test: $(TESTS) 
-
-$(TESTS): $(TEST_H) $(TEST_OBJ)
-	$(CC) -o $@ $(TEST_OBJ) $(TARGET) $(LIBS)
 	@touch ./test/tests.log
-	$(TESTSCRIPT)
+	@$(TESTSCRIPT)
+
+$(TESTS): $(TEST_H) $(TEST_OBJ) $(TARGET)
+	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
 
 ifeq ($(UNAME), Linux)
 memtest:
@@ -96,4 +96,4 @@ install: all
 BADFUNCS='[^_.>a-zA-Z0-9] (str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
 check:
 	@echo Files with potentially dangerous functions:
-	grep $(BADFUNCS) $(SOURCES)
+	grep $(BADFUNCS) $(SOURCES) || true
