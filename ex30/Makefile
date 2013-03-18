@@ -37,7 +37,7 @@ TARGET=build/libex30.a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 
 # The Target Build
-all: $(TARGET) $(SO_TARGET) tests
+all: $(TARGET) $(SO_TARGET) test
 
 dev: CFLAGS += -DDEBUG
 dev: all
@@ -53,7 +53,7 @@ $(SO_TARGET): $(TARGET) $(OBJECTS)
 build:
 	@mkdir -p build
 
-includes: $(INCS)
+include: $(INCS)
 
 $(INCS): $(INC_H) $(INC_OBJ)
 	ar rcs $@ $(INC_OBJ)
@@ -61,8 +61,8 @@ $(INCS): $(INC_H) $(INC_OBJ)
 	
 # The Unit Tests
 .PHONY: tests
-tests: CFLAGS += $(TESTFLAGS)
-tests: $(TESTS) 
+test: CFLAGS += $(TESTFLAGS)
+test: $(TESTS) 
 
 $(TESTS): $(TEST_H) $(TEST_OBJ)
 	$(CC) -o $@ $(TEST_OBJ) $(TARGET) $(LIBS)
@@ -96,4 +96,4 @@ install: all
 BADFUNCS='[^_.>a-zA-Z0-9] (str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
 check:
 	@echo Files with potentially dangerous functions:
-	@grep $(BADFUNCS) $(SOURCES) || true
+	grep $(BADFUNCS) $(SOURCES)
