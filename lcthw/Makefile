@@ -1,3 +1,6 @@
+# The name of your project:
+LIB_NAME=lcthw
+
 #For detecting the os:
 UNAME := $(shell uname)
 
@@ -33,7 +36,7 @@ INC_SRC=$(wildcard include/**/*.c include/*.c)
 INC_OBJ=$(patsubst %.c,%.o,$(INC_SRC))
 INCS=$(patsubst %.o,%.a,$(INC_OBJ))
 
-TARGET=build/libex30.a
+TARGET=build/lib$(LIB_NAME).a
 SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 
 # The Target Build
@@ -83,7 +86,7 @@ endif
 clean:
 	rm -rf build 
 	rm -f $(OBJECTS) $(wildcard test/*.exe test/*.o)
-	rm -f test/tests.log
+	rm -f test/tests.log test/tests.log.old
 #find . -name "*.gc*" -exec rm {} \;
 #rm -rf 'find . -name "*.dSYM" -print'
 
