@@ -18,7 +18,7 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Isrc -Iinclude $(OPTFLAGS)
 LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS)
 PREFIX?=/usr/local
 
@@ -69,8 +69,10 @@ test: $(TESTS)
 	@touch ./test/tests.log
 	@$(TESTSCRIPT)
 
-$(TESTS): $(TEST_H) $(TEST_OBJ) $(TARGET)
+$(TESTS): $(TEST_OBJ) $(TARGET)
 	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
+
+$(TEST_OBJ): $(TEST_H)
 
 ifeq ($(UNAME), Linux)
 memtest:

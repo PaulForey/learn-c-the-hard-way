@@ -10,12 +10,12 @@ do
     if test -f $i
     then
 		echo "----------------------"
-		echo "RUNNING: $i"
+		echo "Running $i..."
         if $VALGRIND ./$i 2>> test/tests.log
         then
-            echo "PASSED: $i"
+            echo "...$i passed."
         else
-            echo -e "\tERROR in $i."
+            echo "ERROR in $i."
 			((ERRORS++))
         fi
     fi
@@ -25,9 +25,9 @@ echo "----------------------"
 if test $ERRORS -gt 0
 then
 	echo -e "\tERRORS FOUND, here's tests/tests.log:"
-	echo "=============================================="
+	echo "======================================================="
 	cat test/tests.log
-	echo "=============================================="
+	echo "======================================================="
 	exit 1
 else
 	echo "All tests passed! You win a hot dog!"
