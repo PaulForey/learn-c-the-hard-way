@@ -1,9 +1,8 @@
 # The name of your project:
 LIB_NAME=lcthw
 
-#For detecting the os:
+# OS detection and associated options:
 UNAME := $(shell uname)
-
 ifeq ($(UNAME), Linux)
 	TESTSCRIPT=./test/runtests.sh
 	PLAT_LIBS=
@@ -11,14 +10,14 @@ ifeq ($(UNAME), Linux)
 	SO_EXT=.so
 endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
-	TESTSCRIPT=powershell -executionpolicy remotesigned -NoProfile ./test/runtests.ps1
+	TESTSCRIPT=powershell -ExecutionPolicy remotesigned -NoProfile ./test/runtests.ps1
 	PLAT_LIBS=
 	EXE_EXE=.exe
 	SO_EXT=.dll
 endif
 
 
-CFLAGS=-g -O2 -Wall -Isrc -Iinclude $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
 LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS)
 PREFIX?=/usr/local
 
@@ -76,12 +75,12 @@ $(TEST_OBJ): $(TEST_H)
 
 ifeq ($(UNAME), Linux)
 memtest:
-	VALGRIND="valgrind --track-origins=yes" $(MAKE)
+	VALGRIND="valgrind --track-origins=yes --leak-check=full --show-reachable=yes" $(MAKE) dev
 endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
 memtest:
 	#DRMEMORY="C:\Program Files (x86)\Dr. Memory\bin\drmemory.exe -batch " $(MAKE)
-	DRMEMORY="drmemory -batch " $(MAKE)
+	DRMEMORY="drmemory -batch " $(MAKE) dev
 endif
 
 # The Cleaner
