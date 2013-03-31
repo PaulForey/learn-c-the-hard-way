@@ -5,6 +5,8 @@ static List *list = NULL;
 char* test1 = "test1 data";
 char* test2 = "test2 data";
 char* test3 = "test3 data";
+char* test4 = "test4 data";
+char* test5 = "test5 data";
 
 char* test_create()
 {
@@ -177,17 +179,40 @@ char* test_split()
 	List_push(list1, test1);
 	List_push(list1, test2);
 	List_push(list1, test3);
+	List_push(list1, test4);
+	List_push(list1, test5);
 	List_print(list1);
-	mu_assert(List_count(list1) == 3, "Incorrect count before split.");
+	mu_assert(List_count(list1) == 5, "Incorrect count before split.");
 
-	List* list2 = List_split(list1, list1->first->next);
+	List* list2 = List_split(list1, list1->first->next->next);
 	List_print(list1);
 	List_print(list2);
-	mu_assert(List_count(list1) == 1, "Incorrect count after split.");
-	mu_assert(List_count(list2) == 2, "Incorrect count after split.");
+	debug("list1 count: %i", List_count(list1));
+	mu_assert(List_count(list1) == 2, "Incorrect count after split.");
+	debug("list2 count: %i", List_count(list2));
+	mu_assert(List_count(list2) == 3, "Incorrect count after split.");
 
 	List_destroy(list1);
+	List_destroy(list2);
+
+	return NULL;
+}
+
+char* test_split_2()
+{
+	List* list1 = List_create();
+	List_push(list1, test1);
+	List_push(list1, test2);
+	List_push(list1, test3);
+
+	mu_assert(List_count(list1) == 3, "Incorrect count before split.");
+	List* list2 = List_split(list1, list1->first);
+
+	mu_assert(List_count(list1) == 0, "Incorrect count after split.");
+	mu_assert(List_count(list2) == 3, "Incorrect count after split.");
+
 	List_destroy(list1);
+	List_destroy(list2);
 
 	return NULL;
 }
@@ -215,6 +240,7 @@ char* all_tests()
 	mu_run_test(test_clear_destroy);
 	mu_run_test(test_join);
 	mu_run_test(test_split);
+	mu_run_test(test_split_2);
 	return NULL;
 }
 

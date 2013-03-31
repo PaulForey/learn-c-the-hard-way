@@ -26,7 +26,7 @@ echo "----------------------"
 
 if test $ERRORS -gt 0
 then
-	echo -e "\tERRORS FOUND, here's tests/tests.log:"
+	echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
 	echo "======================================================="
 	cat test/tests.log
 	echo "======================================================="

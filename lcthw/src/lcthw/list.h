@@ -81,12 +81,14 @@ void* List_pop(List* list);
 void List_unshift(List* list, void* value);
 
 /*
- * List_shift -- Removes and returns the value from the start of the list.
+ * List_shift -- Removes and returns the value from the start of the
+ * 				 list.
  */
 void* List_shift(List* list);
 
 /*
- * List_remove -- Removes (and then frees) the specified ListNode from the list.
+ * List_remove -- Removes (and then frees) the specified ListNode from
+ * 				  the list.
  * returns:	The ListNode's value.
  */
 void* List_remove(List* list, ListNode* node);
@@ -94,9 +96,10 @@ void* List_remove(List* list, ListNode* node);
 /*
  * LIST_FOREACH -- A macro for iterating through the list.
  * args:	List*, (first | last), (next | prev), cur
- * method:	Using the List* L, this will access L->S and then iterate from there
- * 			to the end of the list, using ListNode->M to access the next node. On
- * 			each iteration V is set to the current node.
+ * method:	Using the List* L, this will access L->S and then iterate
+ * 			from there to the end of the list, using ListNode->M to
+ * 			access the next node. On each iteration V is set to the 
+ * 			current node.
  */
 #define LIST_FOREACH(L, S, M, V)	ListNode* _node = NULL; \
 	ListNode *V = NULL; \
@@ -108,20 +111,24 @@ void* List_remove(List* list, ListNode* node);
 /* * * * * * * * * * * * * * */
 
 /*
- * List_copy -- Returns a new list which has exactly the same values as the last list.
+ * List_copy -- Returns a new list which has exactly the same values
+ * 				as the last list.
  * returns:	List* or NULL if there were errors.
  */
 List* List_copy(List* list);
 
 /*
- * List_join -- Adds the values from the second list onto the end of the first list.
+ * List_join -- Adds the values from the second list onto the end of
+ * 				the first list.
  */
 void List_join(List* list1, List* list2);
 
 /*
- * List_split -- The given list is split at the given node. The supplied list's ListNodes
- * 				 are removed from the given node onwards (the given node is also removed),
- * 				 and a new list is returned containing the removed part of the given list.
+ * List_split -- The given list is split at the given node. The
+ * 				 supplied list's ListNodes are removed from the given
+ * 				 node onwards (the given node is also removed), and
+ * 				 a new list is returned containing the removed part
+ * 				 of the given list.
  * returns:	List* or NULL if there were errors.
  */
 List* List_split(List* list, ListNode* node);
@@ -130,5 +137,7 @@ List* List_split(List* list, ListNode* node);
  * List_print -- Prints the list to stdout in a nice(ish) format.
  */
 void List_print(List* list);
+
+void List_debug(List* list);
 
 #endif // lcthw_List_h

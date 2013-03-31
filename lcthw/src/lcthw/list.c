@@ -169,16 +169,21 @@ List* List_split(List* list, ListNode* node)
 {
 	_CHECK_LIST(list);
 	List* new_list = List_create();
-	int start_copying = 0;
+	debug("List_split: starting loop on list %p for node %p",
+			list, node);
+	List_debug(list);
+	int i = list->count;
 	LIST_FOREACH(list, first, next, cur) {
-		debug("List_split: started copying: %d", start_copying);
-		if(start_copying == 1) {
-			List_push(new_list, List_remove(list, cur));
-		} else if(cur == node) {
-			start_copying = 1;
-			List_push(new_list, List_remove(list, cur));
-		}
+		if(cur == node)
+			break;
+		i--;
 	}
+	while(i > 0) {
+		List_unshift(new_list, List_pop(list));
+		i--;
+	}
+	List_debug(list);
+	List_debug(new_list);
 	return new_list;
 error:
 	return NULL;
@@ -188,6 +193,8 @@ void List_print(List* list)
 {
 	_CHECK_LIST(list);
 	int i = 0;
+
+	printf("Printing list %p:\n", list);
 	LIST_FOREACH(list, first, next, cur) {
 		if(cur->value)
 			printf("%d:\t%s\n", i, (char*)cur->value);
@@ -201,5 +208,23 @@ error:
 }
 
 
+void List_debug(List* list)
+{
+	_CHECK_LIST(list);
+	int i = 0;
+
+	debug("Printing list %p:", list);
+	LIST_FOREACH(list, first, next, cur) {
+		if(cur->value) {
+			debug("%d:\t%s", i, (char*)cur->value);
+		} else {
+			debug("%d:\tNULL", i);
+		}
+		i++;
+	}
+
+error:
+	return;
+}
 
 
