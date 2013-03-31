@@ -5,13 +5,13 @@ echo "Running unit tests:"
 
 ERRORS=0
 
-for i in test/*_test
+for i in test/$TEST_PAT
 do
     if test -f $i
     then
 		echo "----------------------"
 		echo "Running $i..."
-        if $VALGRIND ./$i 2>> test/tests.log
+        if $MEMTEST ./$i 2>> test/tests.log
 		then
             echo "$i passed."
         else
@@ -33,9 +33,9 @@ then
 	exit 1
 fi
 
-if test -n "$VALGRIND"
+if test -n "$MEMTEST"
 then
-	echo "VALGRIND ran, here's tests/tests.log:"
+	echo "$MEMTEST ran, here's tests/tests.log:"
 	echo "======================================================="
 	cat test/tests.log
 	echo "======================================================="

@@ -5,30 +5,42 @@ echo "Running unit tests:"
 
 ERRORS=0
 
-for i in test/*_test
+for i in test/$TEST_PAT
 do
     if test -f $i
     then
 		echo "----------------------"
-		echo "RUNNING: $i"
-        if $VALGRIND ./$i 2>> test/tests.log
-        then
-            echo "PASSED: $i"
+		echo "Running $i..."
+        if $MEMTEST ./$i 2>> test/tests.log
+		then
+            echo "$i passed."
         else
-            echo -e "\tERROR in $i."
+            echo "ERROR in $i."
 			((ERRORS++))
         fi
     fi
 done
 
 echo "----------------------"
+
+
 if test $ERRORS -gt 0
 then
-	echo -e "\tERRORS FOUND, here's tests/tests.log:"
-	echo "=============================================="
+	echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
+	echo "======================================================="
 	cat test/tests.log
-	echo "=============================================="
+	echo "======================================================="
 	exit 1
-else
-	echo "All tests passed! You win a hot dog!"
 fi
+
+if test -n "$MEMTEST"
+then
+	echo "$MEMTEST ran, here's tests/tests.log:"
+	echo "======================================================="
+	cat test/tests.log
+	echo "======================================================="
+	exit 0
+fi
+
+echo "All tests passed! You win a hot dog!"
+exit 0

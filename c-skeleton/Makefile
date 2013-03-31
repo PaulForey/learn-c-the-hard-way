@@ -1,20 +1,20 @@
 # The name of your project:
-LIB_NAME=YOURNAME
+LIB_NAME=YOUR_PROJECT_HERE
 
-
-#For detecting the os:
+# OS detection and associated options:
 UNAME := $(shell uname)
-
 ifeq ($(UNAME), Linux)
 	TESTSCRIPT=./test/runtests.sh
+	MEMTEST=valgrind --track-origins=yes --leak-check=full --show-reachable=yes
 	PLAT_LIBS=
 	EXE_EXT=
 	SO_EXT=.so
 endif
 ifeq ($(UNAME), MINGW32_NT-6.1)
-	TESTSCRIPT=powershell -executionpolicy remotesigned -NoProfile ./test/runtests.ps1
+	TESTSCRIPT=sh ./test/runtests.sh
+	MEMTEST=drmemory -batch
 	PLAT_LIBS=
-	EXE_EXE=.exe
+	EXE_EXT=.exe
 	SO_EXT=.dll
 endif
 
@@ -68,20 +68,15 @@ $(INCS): $(INC_H) $(INC_OBJ)
 test: CFLAGS += $(TESTFLAGS)
 test: $(TESTS) 
 	@touch ./test/tests.log
-	@$(TESTSCRIPT)
+	@TEST_PAT=*_test$(EXE_EXT) $(TESTSCRIPT)
 
-$(TESTS): $(TEST_H) $(TEST_OBJ) $(TARGET)
+$(TESTS): $(TEST_OBJ) $(TARGET)
 	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
 
-ifeq ($(UNAME), Linux)
+$(TEST_OBJ): $(TEST_H)
+
 memtest:
-	VALGRIND="valgrind --track-origins=yes" $(MAKE)
-endif
-ifeq ($(UNAME), MINGW32_NT-6.1)
-memtest:
-	#DRMEMORY="C:\Program Files (x86)\Dr. Memory\bin\drmemory.exe -batch " $(MAKE)
-	DRMEMORY="drmemory -batch " $(MAKE)
-endif
+	MEMTEST="$(MEMTEST)" $(MAKE) dev
 
 # The Cleaner
 clean:
