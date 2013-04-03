@@ -46,7 +46,7 @@ all: $(TARGET) $(SO_TARGET) test
 dev: CFLAGS += -DDEBUG
 dev: all
 
-$(TARGET): CFLAGS += -fPIC
+#$(TARGET): CFLAGS += -fPIC
 $(TARGET): build $(HEADERS) $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
