@@ -181,12 +181,9 @@ char* test_split()
 	List_push(list1, test3);
 	List_push(list1, test4);
 	List_push(list1, test5);
-	List_print(list1);
 	mu_assert(List_count(list1) == 5, "Incorrect count before split.");
 
 	List* list2 = List_split(list1, list1->first->next->next);
-	List_print(list1);
-	List_print(list2);
 	debug("list1 count: %i", List_count(list1));
 	mu_assert(List_count(list1) == 2, "Incorrect count after split.");
 	debug("list2 count: %i", List_count(list2));

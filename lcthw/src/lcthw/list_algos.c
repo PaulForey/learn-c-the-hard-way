@@ -1,0 +1,11 @@
+#include "list_algos.h"
+
+int List_bubble_sort(List* list, List_compare compare)
+{
+	return 1;
+}
+
+int List_merge_sort(List* list, List_compare compare)
+{
+	return 0;
+}
