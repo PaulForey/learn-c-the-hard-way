@@ -18,3 +18,34 @@ int DArray_expand(DArray* array);
 int DArray_contract(DArray* array);
 int DArray_push(DArray* array, void* element);
 void* DArray_pop(DArray* array);
+void DArray_clear_destroy(DArray* array);
+#define DArray_last(A) ((A)->contents[(A)->end-1])
+#define DArray_first(A) ((A)->contents[0])
+#define DArray_end(A) ((A)->end)
+#define DArray_count(A) DArray_end(A)
+#define DArray_max(A) ((A)->max)
+#define DEFAULT_EXPAND_RATE 300
+static inline void DArray_set(DArray* array, int i, void* element)
+{
+	check(i < array->max, "DArray attempt to set past max");
+	if(i > array->end) array->end = i;
+	array->contents[i] = element;
+error:
+	return;
+}
+static inline void* DArray_get(DArray* array, int i)
+{
+	check(i < array->max, "DArray attempt to set past max");
+	return array->contents[i];
+error:
+	return NULL;
+}
+static inline void* DArray_new(DArray* array)
+{
+	check(array->element_size > 0, "Can't use DArray_new on 0 size darrays.");
+	return calloc(1, array->element_size);
+error:
+	return NULL;
+}
+#define DArray_free(E) free((E))
+#endif // _DArray_H

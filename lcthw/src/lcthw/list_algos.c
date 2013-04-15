@@ -79,6 +79,14 @@ error:
     return 1;
 }
 
+List* merge_lists(List* list1, List* list2)
+{
+	List* new_list = List_create();
+	return new_list;
+}
+
+
+
 List* List_merge_sort(List* list, List_compare compare)
 {
     return List_create();
