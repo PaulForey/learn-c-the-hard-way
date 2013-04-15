@@ -78,7 +78,7 @@ error:
 	return NULL;
 }
 
-void List_unshift(List* list, void* value)
+void List_fpush(List* list, void* value)
 {
 	_CHECK_LIST(list);
 	ListNode* node = calloc(1, sizeof(ListNode));
@@ -99,7 +99,7 @@ error:
 	return;
 }
 
-void* List_shift(List* list)
+void* List_fpop(List* list)
 {
 	_CHECK_LIST(list);
 	ListNode* node = list->first;
@@ -179,7 +179,7 @@ List* List_split(List* list, ListNode* node)
 		i--;
 	}
 	while(i > 0) {
-		List_unshift(new_list, List_pop(list));
+		List_fpush(new_list, List_pop(list));
 		i--;
 	}
 	List_debug(list);

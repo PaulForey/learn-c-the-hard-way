@@ -43,27 +43,26 @@ int List_bubble_sort(List* list, List_compare compare)
     int swapped = 0;
     int is_sorted = 0;
 
-    List_debug(list);
+    //List_debug(list);
 
     if(List_count(list) < 2) { //
         log_warn("given list is too small to sort.");
         return 0;
     }
 
-    debug("starting loop...");
     for(i = 0; i < List_count(list); i++) {
         swapped = 0;
-        debug("starting inner loop...");
+        //debug("starting inner loop...");
         LIST_FOREACH(list, first, next, cur) {
             if(cur->next) {
                 if(compare(cur->value, cur->next->value) > 0) {
-                    debug("swapping nodes %p and %p", cur, cur->next);
+                    //debug("swapping nodes %p and %p", cur, cur->next);
                     swap_nodes(list, cur, cur->next);
                     swapped = 1;
                 }
             }
         }
-        debug("i = %i\tswapped = %i", i, swapped);
+        //debug("i = %i\tswapped = %i", i, swapped);
         if(swapped == 0) { // no swaps were made; the list is sorted
             is_sorted = 1;
             break;
@@ -72,22 +71,82 @@ int List_bubble_sort(List* list, List_compare compare)
 
     check(is_sorted == 1, "The list is still not sorted! This is an error.");
 
-    List_debug(list);
+    //List_debug(list);
 
     return 0;
 error:
     return 1;
 }
 
-List* merge_lists(List* list1, List* list2)
+List* merge_lists(List* list1, List* list2, List_compare compare)
 {
-	List* new_list = List_create();
-	return new_list;
+	List* result = List_create();
+    while(List_count(list1) > 0 || List_count(list2) > 0) {
+        if(List_count(list1) > 0 && List_count(list2) > 0) {
+            if(compare(list1->first->value, list2->first->value) <= 0) {
+                List_push(result, List_fpop(list1));
+            } else {
+                List_push(result, List_fpop(list2));
+            }
+        } else if(List_count(list1) > 0) {
+            List_push(result, List_fpop(list1));
+        } else if(List_count(list2) > 0) {
+            List_push(result, List_fpop(list2));
+        } else sentinel("merge_lists shouldn't have got here.");
+    }
+
+    List_destroy(list1);
+    List_destroy(list2);
+    //List_debug(result);
+	return result;
+error:
+    return NULL;
 }
 
+List* merge_sort(List* list, List_compare compare)
+{
+    if(List_count(list) <= 1) {
+        return list;
+    }
+    debug("List_count of list %p is: %i", list, List_count(list));
+    //List_debug(list);
+    List* left = List_create();
+    List* right = List_create();
+    int middle = List_count(list) / 2;
+    int position = 0;
+    LIST_FOREACH(list, first, next, cur) {
+        if(position < middle) {
+            List_push(left, cur->value);
+        } else {
+            List_push(right, cur->value);
+        }
+        position++;
+    }
+    check((List_count(left) + List_count(right)) == List_count(list), "Incorrect split-list sizes");
 
+    left = merge_sort(left, compare);
+    check(left != NULL, "Error in left merge sort.");
+    right = merge_sort(right, compare);
+    check(right != NULL, "Error in right merge sort.");
+
+    if(list)
+        free(list);
+
+    return merge_lists(left, right, compare);
+error:
+    return NULL;
+}
 
 List* List_merge_sort(List* list, List_compare compare)
 {
-    return List_create();
+    _CHECK_LIST(list);
+
+    if(List_count(list) <= 1) {
+        log_warn("List to merge sort is too small!");
+        return list;
+    }
+
+    return merge_sort(list, compare);
+error:
+    return NULL;
 }

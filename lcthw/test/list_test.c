@@ -80,21 +80,21 @@ char* test_push_pop()
 	return NULL;
 }
 
-char* test_unshift()
+char* test_fpush()
 {
-	List_unshift(list, test1);
+	List_fpush(list, test1);
 	mu_assert(List_first(list) == test1, "Wrong first value.");
-	List_unshift(list, test2);
+	List_fpush(list, test2);
 	mu_assert(List_first(list) == test2, "Wrong first value.");
-	List_unshift(list, test3);
+	List_fpush(list, test3);
 	mu_assert(List_first(list) == test3, "Wrong first value.");
-	mu_assert(List_count(list) == 3, "Wrong count on unshift.");
+	mu_assert(List_count(list) == 3, "Wrong count on fpush.");
 	return NULL;
 }
 
 char* test_remove()
 {
-	// We only test the middle case 'cause pop/shift have already
+	// We only test the middle case 'cause pop/fpop have already
 	// tested the other cases.
 	char* val = List_remove(list, list->first->next);
 	mu_assert(val == test2, "Wrong removed element.");
@@ -104,14 +104,14 @@ char* test_remove()
 	return NULL;
 }
 
-char* test_shift()
+char* test_fpop()
 {
-	mu_assert(List_count(list) != 0, "Wrong count before shift.");
-	char* val = List_shift(list);
-	mu_assert(val == test3, "Wrong value on shift.");
-	val = List_shift(list);
-	mu_assert(val == test1, "Wrong value on shift.");
-	mu_assert(List_count(list) == 0, "Wrong count after shift.");
+	mu_assert(List_count(list) != 0, "Wrong count before fpop.");
+	char* val = List_fpop(list);
+	mu_assert(val == test3, "Wrong value on fpop.");
+	val = List_fpop(list);
+	mu_assert(val == test1, "Wrong value on fpop.");
+	mu_assert(List_count(list) == 0, "Wrong count after fpop.");
 	return NULL;
 }
 
@@ -227,10 +227,10 @@ char* all_tests()
 	mu_suite_start();
 	mu_run_test(test_create);
 	mu_run_test(test_push_pop);
-	mu_run_test(test_unshift);
+	mu_run_test(test_fpush);
 	mu_run_test(test_print);
 	mu_run_test(test_remove);
-	mu_run_test(test_shift);
+	mu_run_test(test_fpop);
 	mu_run_test(test_copy);
 	mu_run_test(test_destroy);
 	mu_run_test(test_clear);

@@ -1,5 +1,6 @@
 mv test/tests.log test/tests.log.old
 touch test/tests.log
+echo "=======================================================" >> test/tests.log
 
 echo "Running unit tests:"
 
@@ -18,6 +19,7 @@ do
             echo "ERROR in $i."
 			((ERRORS++))
         fi
+        echo "=======================================================" >> test/tests.log
     fi
 done
 
@@ -27,18 +29,14 @@ echo "----------------------"
 if test $ERRORS -gt 0
 then
 	echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
-	echo "======================================================="
 	cat test/tests.log
-	echo "======================================================="
 	exit 1
 fi
 
 if test -n "$MEMTEST"
 then
 	echo "$MEMTEST ran, here's tests/tests.log:"
-	echo "======================================================="
 	cat test/tests.log
-	echo "======================================================="
 	exit 0
 fi
 

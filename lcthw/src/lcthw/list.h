@@ -76,15 +76,15 @@ void List_push(List* list, void* value);
 void* List_pop(List* list);
 
 /*
- * List_unshift -- Adds a value to the start of the list.
+ * List_fpush -- Adds a value to the start of the list.
  */
-void List_unshift(List* list, void* value);
+void List_fpush(List* list, void* value);
 
 /*
- * List_shift -- Removes and returns the value from the start of the
+ * List_fpop -- Removes and returns the value from the start of the
  * 				 list.
  */
-void* List_shift(List* list);
+void* List_fpop(List* list);
 
 /*
  * List_remove -- Removes (and then frees) the specified ListNode from
