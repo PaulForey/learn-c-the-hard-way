@@ -122,15 +122,13 @@ List* merge_sort(List* list, List_compare compare)
         }
         position++;
     }
-    check((List_count(left) + List_count(right)) == List_count(list), "Incorrect split-list sizes");
+    check((List_count(left) + List_count(right)) == List_count(list),
+                    "Incorrect split-list sizes");
 
     left = merge_sort(left, compare);
     check(left != NULL, "Error in left merge sort.");
     right = merge_sort(right, compare);
     check(right != NULL, "Error in right merge sort.");
-
-    if(list)
-        free(list);
 
     return merge_lists(left, right, compare);
 error:
