@@ -81,22 +81,26 @@ error:
 List* merge_lists(List* list1, List* list2, List_compare compare)
 {
 	List* result = List_create();
+	void* val = NULL;
     while(List_count(list1) > 0 || List_count(list2) > 0) {
         if(List_count(list1) > 0 && List_count(list2) > 0) {
             if(compare(list1->first->value, list2->first->value) <= 0) {
-                List_push(result, List_fpop(list1));
+                val = List_fpop(list1);
             } else {
-                List_push(result, List_fpop(list2));
+                val = List_fpop(list2);
             }
+			List_push(result, val);
         } else if(List_count(list1) > 0) {
-            List_push(result, List_fpop(list1));
+			val = List_fpop(list1);
+			List_push(result, val);
         } else if(List_count(list2) > 0) {
-            List_push(result, List_fpop(list2));
+			val = List_fpop(list2);
+			List_push(result, val);
         } else sentinel("merge_lists shouldn't have got here.");
     }
 
-    List_destroy(list1);
-    List_destroy(list2);
+    //List_destroy(list1);
+    //List_destroy(list2);
     //List_debug(result);
 	return result;
 error:
@@ -125,12 +129,16 @@ List* merge_sort(List* list, List_compare compare)
     check((List_count(left) + List_count(right)) == List_count(list),
                     "Incorrect split-list sizes");
 
-    left = merge_sort(left, compare);
-    check(left != NULL, "Error in left merge sort.");
-    right = merge_sort(right, compare);
+    List* sort_left = merge_sort(left, compare);
+    check(sort_left != NULL, "Error in left merge sort.");
+
+    List* sort_right = merge_sort(right, compare);
     check(right != NULL, "Error in right merge sort.");
 
-    return merge_lists(left, right, compare);
+	if(sort_left != left) List_destroy(left);
+	if(sort_right != right) List_destroy(right);
+
+    return merge_lists(sort_left, sort_right, compare);
 error:
     return NULL;
 }
