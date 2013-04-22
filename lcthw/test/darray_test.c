@@ -1,6 +1,6 @@
 #include "minunit.h"
 #include <lcthw/darray.h>
-/*
+
 static DArray* array = NULL;
 static int* val1 = NULL;
 static int* val2 = NULL;
@@ -114,10 +114,3 @@ char* all_tests() {
 }
 
 RUN_TESTS(all_tests);
-
-*/
-
-int main() {
-	debug("DArray test is currently void whilst I'm working on list_algos_test.");
-    return 0;
-}
