@@ -83,7 +83,6 @@ char* test_merge_sort()
 
     List_destroy(res2);
     List_destroy(res);
-
     List_destroy(words);
     return NULL;
 }

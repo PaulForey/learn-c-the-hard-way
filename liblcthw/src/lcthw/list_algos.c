@@ -1,39 +1,11 @@
 #include <dbg.h>
 #include "list_algos.h"
 
-void swap_nodes(List* list, ListNode* node1, ListNode* node2)
+void swap_node_data(ListNode* node1, ListNode* node2)
 {
-    if(!node1->prev && !node2->next) { // we have a list of only two elements
-        list->first = node2;
-        node2->prev = NULL;
-
-        list->last = node1;
-        node1->next = NULL;
-
-    } else if(!node1->prev) { // we are at the start of the list
-        list->first = node2;
-        node2->prev = NULL;
-
-        node2->next->prev = node1;
-        node1->next = node2->next;
-
-    } else if(!node2->next) { // we are at the end of the list
-        node1->prev->next = node2;
-        node2->prev = node1->prev;
-
-        list->last = node1;
-        node1->next = NULL;
-
-    } else { // we are in the middle of the list
-        node1->prev->next = node2;
-        node2->prev = node1->prev;
-
-        node2->next->prev = node1;
-        node1->next = node2->next;
-    }
-    // These happen no matter where in the list we are:
-    node1->prev = node2;
-    node2->next = node1;
+	void* temp = node1->value;
+	node1->value = node2->value;
+	node2->value = temp;
 }
 
 int List_bubble_sort(List* list, List_compare compare)
@@ -57,7 +29,7 @@ int List_bubble_sort(List* list, List_compare compare)
             if(cur->next) {
                 if(compare(cur->value, cur->next->value) > 0) {
                     //debug("swapping nodes %p and %p", cur, cur->next);
-                    swap_nodes(list, cur, cur->next);
+                    swap_node_data(cur, cur->next);
                     swapped = 1;
                 }
             }
@@ -99,8 +71,8 @@ List* merge_lists(List* list1, List* list2, List_compare compare)
         } else sentinel("merge_lists shouldn't have got here.");
     }
 
-    //List_destroy(list1);
-    //List_destroy(list2);
+    List_destroy(list1);
+    List_destroy(list2);
     //List_debug(result);
 	return result;
 error:
@@ -109,10 +81,13 @@ error:
 
 List* merge_sort(List* list, List_compare compare)
 {
-    if(List_count(list) <= 1) {
-        return list;
-    }
     debug("List_count of list %p is: %i", list, List_count(list));
+    if(List_count(list) == 1) {
+        return list;
+    } else if(List_count(list) < 1) {
+		sentinel("List_count of list %p is too small: %i",
+								list, List_count(list));
+	}
     //List_debug(list);
     List* left = List_create();
     List* right = List_create();
@@ -133,7 +108,7 @@ List* merge_sort(List* list, List_compare compare)
     check(sort_left != NULL, "Error in left merge sort.");
 
     List* sort_right = merge_sort(right, compare);
-    check(right != NULL, "Error in right merge sort.");
+    check(sort_right != NULL, "Error in right merge sort.");
 
 	if(sort_left != left) List_destroy(left);
 	if(sort_right != right) List_destroy(right);
