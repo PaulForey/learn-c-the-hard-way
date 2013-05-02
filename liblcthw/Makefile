@@ -20,7 +20,7 @@ endif
 
 
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
-LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS)
+LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt
 PREFIX?=/usr/local
 
 HEADERS=$(wildcard src/**/*.h src/*.h)

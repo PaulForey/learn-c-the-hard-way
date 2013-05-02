@@ -3,10 +3,11 @@
 
 DArray* DArray_create(size_t element_size, size_t initial_max)
 {
+	check(element_size > 0, "Element size of zero must be wrong.");
+	check(initial_max > 0, "You must set an initial max > 0");
 	DArray* array = malloc(sizeof(DArray));
 	check_mem(array);
 
-	check(initial_max > 0, "You must set an initial max > 0");
 	array->max = initial_max;
 
 	array->contents = calloc(initial_max, sizeof(void*));

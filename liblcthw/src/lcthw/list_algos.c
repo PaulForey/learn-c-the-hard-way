@@ -8,24 +8,25 @@ void swap_node_data(ListNode* node1, ListNode* node2)
 	node2->value = temp;
 }
 
-int List_bubble_sort(List* list, List_compare compare)
+List* List_bubble_sort(List* list, List_compare compare)
 {
     _CHECK_LIST(list);
     int i = 0;
     int swapped = 0;
     int is_sorted = 0;
 
-    //List_debug(list);
+	List* result = List_copy(list);
 
-    if(List_count(list) < 2) { //
+    //List_debug(list);
+    if(List_count(result) < 2) { //
         log_warn("given list is too small to sort.");
-        return 0;
+        return result;
     }
 
-    for(i = 0; i < List_count(list); i++) {
+    for(i = 0; i < List_count(result); i++) {
         swapped = 0;
         //debug("starting inner loop...");
-        LIST_FOREACH(list, first, next, cur) {
+        LIST_FOREACH(result, first, next, cur) {
             if(cur->next) {
                 if(compare(cur->value, cur->next->value) > 0) {
                     //debug("swapping nodes %p and %p", cur, cur->next);
@@ -35,19 +36,19 @@ int List_bubble_sort(List* list, List_compare compare)
             }
         }
         //debug("i = %i\tswapped = %i", i, swapped);
-        if(swapped == 0) { // no swaps were made; the list is sorted
+        if(swapped == 0) { // no swaps were made; the result is sorted
             is_sorted = 1;
             break;
         }
     }
 
-    check(is_sorted == 1, "The list is still not sorted! This is an error.");
+    check(is_sorted == 1, "The result is still not sorted! This is an error.");
 
-    //List_debug(list);
+    //List_debug(result);
 
-    return 0;
+    return result;
 error:
-    return 1;
+    return NULL;
 }
 
 List* merge_lists(List* list1, List* list2, List_compare compare)
@@ -81,7 +82,7 @@ error:
 
 List* merge_sort(List* list, List_compare compare)
 {
-    debug("List_count of list %p is: %i", list, List_count(list));
+    //debug("List_count of list %p is: %i", list, List_count(list));
     if(List_count(list) == 1) {
         return list;
     } else if(List_count(list) < 1) {
