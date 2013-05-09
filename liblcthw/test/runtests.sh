@@ -1,6 +1,9 @@
+HORIZONTAL_RULE="======================================================="
+DASH_RULE="-------------------------"
+
 mv test/tests.log test/tests.log.old
 touch test/tests.log
-echo "=======================================================" >> test/tests.log
+echo $HORIZONTAL_RULE >> test/tests.log
 
 echo "Running unit tests:"
 
@@ -8,9 +11,9 @@ ERRORS=0
 
 for i in test/$TEST_PAT
 do
-    if test -f $i
+    if [ -f $i ]
     then
-		echo "----------------------"
+		echo $DASH_RULE
 		echo "Running $i..."
         if $MEMTEST ./$i 2>> test/tests.log
 		then
@@ -19,23 +22,23 @@ do
             echo "ERROR in $i."
 			((ERRORS++))
         fi
-        echo "=======================================================" >> test/tests.log
+        echo $HORIZONTAL_RULE >> test/tests.log
     fi
 done
 
-echo "----------------------"
+echo $DASH_RULE
 
 
-if test $ERRORS -gt 0
+if [ $ERRORS -gt 0 ]
 then
 	echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
 	cat test/tests.log
 	exit 1
 fi
 
-if test -n "$MEMTEST"
+if [ -n "$MEMTEST" ]
 then
-	echo "$MEMTEST ran, here's tests/tests.log:"
+	echo "\"$MEMTEST\" ran, here's tests/tests.log:"
 	cat test/tests.log
 	exit 0
 fi

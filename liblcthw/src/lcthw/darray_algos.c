@@ -1,20 +1,19 @@
 #include <lcthw/darray_algos.h>
-
-typedef int (*DArray_compare)(const void* a, const void* b);
+#include <stdlib.h>
 
 int DArray_qsort(DArray* array, DArray_compare cmp)
 {
-	//stuffs
+    qsort(array->contents, DArray_count(array), sizeof(void*), cmp);
+    return 0;
 }
 
 int DArray_heapsort(DArray* array, DArray_compare cmp)
 {
-	//more stuffs
-	
+    return heapsort(array->contents, DArray_count(array), sizeof(void*), cmp);
 }
 
 int DArray_mergesort(DArray* array, DArray_compare cmp)
 {
-	//other stuffs
+    return mergesort(array->contents, DArray_count(array), sizeof(void*), cmp);
 }
 
