@@ -25,6 +25,12 @@ void DArray_clear_destroy(DArray* array);
 #define DArray_count(A) DArray_end(A)
 #define DArray_max(A) ((A)->max)
 #define DEFAULT_EXPAND_RATE 300
+#define DArray_check(A) \
+	check((A) != NULL, "DArray is NULL!"); \
+	check((A)->contents != NULL, "DArray's content pointer is NULL!"); \
+	check((A)->end >= 0, "DArray's end is below 0!"); \
+	check((A)->max >= 0, "DArray's max is below zero!"); \
+	check((A)->max >= (A)->end, "DArray's max is smaller than it's end!");
 static inline void DArray_set(DArray* array, int i, void* element)
 {
 	check(i < array->max, "DArray attempt to set past max");
