@@ -4,7 +4,7 @@
 DArray* DArray_create(size_t element_size, size_t initial_max)
 {
     DArray* array = NULL;
-	check(element_size > 0, "Element size of zero must be wrong.");
+	//check(element_size > 0, "Element size of zero must be wrong.");
 	check(initial_max > 0, "You must set an initial max > 0");
 	array = malloc(sizeof(DArray));
 	check_mem(array);

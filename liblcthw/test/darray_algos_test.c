@@ -9,12 +9,15 @@ int testcmp(char **a, char **b)
 DArray* create_words()
 {
     DArray* result = DArray_create(0, 5);
+    check(result != NULL, "Could not create words darray!");
     char* words[] = {"asdfasfd", "werwar", "13234", "asdfasfd", "oioj"};
     int i = 0;
     for(i = 0; i < 5; i++) {
         DArray_push(result, words[i]);
     }
     return result;
+error:
+    return NULL;
 }
 
 int is_sorted(DArray* array)
@@ -31,6 +34,7 @@ int is_sorted(DArray* array)
 char* run_sort_test(int (*func)(DArray*, DArray_compare), const char* name)
 {
     DArray* words = create_words();
+    mu_assert(words != NULL, "Failed to create words.");
     mu_assert(!is_sorted(words), "Words should not start sorted.");
     debug("--- Testing %s sorting algorithm", name);
     int rc = func(words, (DArray_compare)testcmp);
@@ -45,6 +49,7 @@ char* test_qsort()
     return run_sort_test(DArray_qsort, "qsort");
 }
 
+/*
 char* test_heapsort()
 {
     return run_sort_test(DArray_heapsort, "heapsort");
@@ -54,13 +59,14 @@ char* test_mergesort()
 {
     return run_sort_test(DArray_mergesort, "mergesort");
 }
+*/
 
 char* all_tests()
 {
     mu_suite_start();
     mu_run_test(test_qsort);
-    mu_run_test(test_heapsort);
-    mu_run_test(test_mergesort);
+    //mu_run_test(test_heapsort);
+    //mu_run_test(test_mergesort);
     return NULL;
 }
 
