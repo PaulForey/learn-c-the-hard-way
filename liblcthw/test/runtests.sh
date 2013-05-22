@@ -40,19 +40,18 @@ done
 echo $HORIZONTAL_RULE >> test/tests.log
 echo $DASH_RULE
 
-
 if [ $ERRORS -gt 0 ]
 then
-	echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
-	cat test/tests.log
-	exit 1
+    echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
+    cat test/tests.log
+    exit 1
 fi
 
 if [ -n "$MEMTEST" ]
 then
-	echo "\"$MEMTEST\" ran, here's tests/tests.log:"
-	cat test/tests.log
-	exit 0
+    echo "\"$MEMTEST\" ran, here's tests/tests.log:"
+    cat test/tests.log
+    exit 0
 fi
 
 echo "All tests passed! You win a hot dog!"
