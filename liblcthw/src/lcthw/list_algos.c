@@ -3,9 +3,9 @@
 
 void swap_node_data(ListNode* node1, ListNode* node2)
 {
-	void* temp = node1->value;
-	node1->value = node2->value;
-	node2->value = temp;
+    void* temp = node1->value;
+    node1->value = node2->value;
+    node2->value = temp;
 }
 
 List* List_bubble_sort(List* list, List_compare compare)
@@ -15,7 +15,7 @@ List* List_bubble_sort(List* list, List_compare compare)
     int swapped = 0;
     int is_sorted = 0;
 
-	List* result = List_copy(list);
+    List* result = List_copy(list);
 
     //List_debug(list);
     if(List_count(result) < 2) { //
@@ -53,8 +53,8 @@ error:
 
 List* merge_lists(List* list1, List* list2, List_compare compare)
 {
-	List* result = List_create();
-	void* val = NULL;
+    List* result = List_create();
+    void* val = NULL;
     while(List_count(list1) > 0 || List_count(list2) > 0) {
         if(List_count(list1) > 0 && List_count(list2) > 0) {
             if(compare(list1->first->value, list2->first->value) <= 0) {
@@ -75,7 +75,7 @@ List* merge_lists(List* list1, List* list2, List_compare compare)
     List_destroy(list1);
     List_destroy(list2);
     //List_debug(result);
-	return result;
+    return result;
 error:
     return NULL;
 }
@@ -86,9 +86,9 @@ List* merge_sort(List* list, List_compare compare)
     if(List_count(list) == 1) {
         return list;
     } else if(List_count(list) < 1) {
-		sentinel("List_count of list %p is too small: %i",
-								list, List_count(list));
-	}
+        sentinel("List_count of list %p is too small: %i",
+                                    list, List_count(list));
+    }
     //List_debug(list);
     List* left = List_create();
     List* right = List_create();
@@ -103,7 +103,7 @@ List* merge_sort(List* list, List_compare compare)
         position++;
     }
     check((List_count(left) + List_count(right)) == List_count(list),
-                    "Incorrect split-list sizes");
+            "Incorrect split-list sizes");
 
     List* sort_left = merge_sort(left, compare);
     check(sort_left != NULL, "Error in left merge sort.");
@@ -111,8 +111,8 @@ List* merge_sort(List* list, List_compare compare)
     List* sort_right = merge_sort(right, compare);
     check(sort_right != NULL, "Error in right merge sort.");
 
-	if(sort_left != left) List_destroy(left);
-	if(sort_right != right) List_destroy(right);
+    if(sort_left != left) List_destroy(left);
+    if(sort_right != right) List_destroy(right);
 
     return merge_lists(sort_left, sort_right, compare);
 error:

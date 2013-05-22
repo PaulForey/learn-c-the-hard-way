@@ -13,19 +13,31 @@ for i in test/$TEST_PAT
 do
     if [ -f $i ]
     then
-		echo $DASH_RULE
-		echo "Running $i..."
-        if $MEMTEST ./$i 2>> test/tests.log
-		then
-            echo "$i passed."
+        echo $DASH_RULE
+        echo "Running $i..."
+        if [ -n "$MEMTEST" ]
+        then
+            if $MEMTEST ./$i 2>> test/tests.log
+            then
+                echo "$i passed."
+            else
+                echo "ERROR in $i."
+                ((ERRORS++))
+                break
+            fi
         else
-            echo "ERROR in $i."
-			((ERRORS++))
+            if ./$i 2>> test/tests.log
+            then
+                echo "$i passed."
+            else
+                echo "Error in $i."
+                ((ERRORS++))
+            fi
         fi
-        echo $HORIZONTAL_RULE >> test/tests.log
     fi
 done
 
+echo $HORIZONTAL_RULE >> test/tests.log
 echo $DASH_RULE
 
 
