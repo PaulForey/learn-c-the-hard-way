@@ -19,7 +19,7 @@ ifeq ($(UNAME), MINGW32_NT-6.1)
 endif
 
 
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -Iinclude -fPIC $(OPTFLAGS)
 LIBS=$(INCS) $(PLAT_LIBS) $(OPTLIBS) -lrt
 PREFIX?=/usr/local
 
