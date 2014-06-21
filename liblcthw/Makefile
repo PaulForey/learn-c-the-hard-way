@@ -70,7 +70,7 @@ test: $(TESTS)
 	@touch ./test/tests.log
 	@TEST_PAT=*_test$(EXE_EXT) $(TESTSCRIPT)
 
-$(TESTS): $(TEST_OBJ) $(TARGET)
+$(TESTS): $(TEST_OBJ)
 	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
 
 $(TEST_OBJ): $(TEST_H)
@@ -81,10 +81,12 @@ memtest:
 # The Cleaner
 clean:
 	rm -rf build 
-	rm -f $(OBJECTS) $(wildcard test/*.exe test/*.o)
+	rm -f $(OBJECTS)
+	rm -f $(TESTS) $(TEST_OBJ)
 	rm -f test/tests.log test/tests.log.old
 #find . -name "*.gc*" -exec rm {} \;
 #rm -rf 'find . -name "*.dSYM" -print'
+
 
 # The Install
 install: all
