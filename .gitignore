@@ -12,3 +12,5 @@
 !*.ps1
 !*.sh
 !Makefile
+
+edit.sh
