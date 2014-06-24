@@ -8,6 +8,8 @@
 #define STRING_2_LENGTH 38
 #define STRING_3 "Hello,Bonjour,Guten tag,Hola"
 #define STRING_3_LENGTH 28
+#define STRING_4 "Bonjour"
+#define STRING_5 "Hej"
 
 char* test_bstring()
 {
@@ -157,11 +159,38 @@ char* test_bstring_assign()
 
     return NULL;
 }
+
+char* test_bstring_rest()
+{
+    bstring test_string = bfromcstr(STRING_3);
+    bstring test_find = bfromcstr(STRING_4);
+    bstring test_replace = bfromcstr(STRING_5);
+    bstring answer_before;
+    bstring answer_after;
+
+    answer_before = bformat("Replacing string:\t'%s'\n\twith string:\t'%s'\n\tin string:\t'%s'\n", bdata(test_find),
+            bdata(test_replace), bdata(test_string));
+
+    printf("%s", bdata(answer_before));
+    int res = bfindreplace(test_string, test_find, test_replace, 0);
+    mu_assert(res == BSTR_OK, "findreplace failed");
+
+    answer_after = bformat("Replaced okay.\n\tResult string:\t'%s'\n",
+            bdata(test_string));
+
+    printf("%s", bdata(answer_after));
+
+    bdestroy(test_string);
+    bdestroy(test_find);
+    bdestroy(test_replace);
+    bdestroy(answer_before);
+    bdestroy(answer_after);
+
+    return NULL;
+}
+
+
 /*
-test_bfindreplace
-
-test_bformat
-
 test_bchar
 */
 
@@ -173,6 +202,7 @@ char* all_tests() {
     mu_run_test(test_bstring_functions);
     mu_run_test(test_bstring_list);
     mu_run_test(test_bstring_assign);
+    mu_run_test(test_bstring_rest);
 
     return NULL;
 }
