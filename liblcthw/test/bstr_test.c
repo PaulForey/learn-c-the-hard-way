@@ -11,7 +11,7 @@
 #define STRING_4 "Bonjour"
 #define STRING_5 "Hej"
 
-char* test_bstring()
+char* test_bstring_from_cstring()
 {
     bstring test_string = bfromcstr(STRING_1);
     mu_assert(test_string != NULL, "string creation failed");
@@ -29,7 +29,7 @@ char* test_bstring()
     return NULL;
 }
 
-char* test_blk2bstr()
+char* test_bstring_blk2bstr()
 {
     char* test_block = calloc((size_t)STRING_1_LENGTH+1, sizeof(char));
     test_block[0] = 'H';
@@ -160,7 +160,7 @@ char* test_bstring_assign()
     return NULL;
 }
 
-char* test_bstring_rest()
+char* test_bstring_find()
 {
     bstring test_string = bfromcstr(STRING_3);
     bstring test_find = bfromcstr(STRING_4);
@@ -189,20 +189,15 @@ char* test_bstring_rest()
     return NULL;
 }
 
-
-/*
-test_bchar
-*/
-
 char* all_tests() {
     mu_suite_start();
 
-    mu_run_test(test_bstring);
-    mu_run_test(test_blk2bstr);
+    mu_run_test(test_bstring_from_cstring);
+    mu_run_test(test_bstring_blk2bstr);
     mu_run_test(test_bstring_functions);
     mu_run_test(test_bstring_list);
     mu_run_test(test_bstring_assign);
-    mu_run_test(test_bstring_rest);
+    mu_run_test(test_bstring_find);
 
     return NULL;
 }
