@@ -6,13 +6,11 @@
 #define DEFAULT_NUMBER_OF_BUCKETS 100
 typedef int (*Hashmap_compare)(void* a, void* b);
 typedef uint32_t (*Hashmap_hash)(void* key);
-
 typedef struct Hashmap {
     DArray* buckets;
     Hashmap_compare compare;
     Hashmap_hash hash;
 } Hashmap;
-
 typedef struct HashmapNode {
     void* key;
     void* data;
