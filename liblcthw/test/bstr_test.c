@@ -142,9 +142,9 @@ char* test_bstring_assign()
     char* test_block = calloc((size_t)STRING_2_LENGTH, sizeof(char));
     int i;
     for(i = 0; i < STRING_2_LENGTH; i++) {
-        test_block[i] = (char) rand();
+        test_block[i] = bdata(test_string_1)[rand() % blength(test_string_1)];
     }
-    //test_block[STRING_2_LENGTH] = '\0';
+    test_block[STRING_2_LENGTH] = '\0';
     res = bassignblk(test_string_2, test_block, STRING_2_LENGTH);
     mu_assert(res == BSTR_OK, "bassignblk failed");
 
