@@ -98,19 +98,6 @@ error:
     return NULL;
 }
 
-int Hashmap_set(Hashmap* map, void* key, void* data)
-{
-    uint32_t hash = 0;
-    DArray* bucket = Hashmap_find_bucket(map, key, 1, &hash);
-    check(bucket, "Error: can't create bucket.");
-    HashmapNode* node = Hashmap_node_create(hash, key, data);
-    check_mem(node);
-    DArray_push(bucket, node);
-    return 0;
-error:
-    return -1;
-}
-
 static inline int Hashmap_get_node(Hashmap* map, uint32_t hash,
         DArray* bucket, void* key)
 {
@@ -122,6 +109,27 @@ static inline int Hashmap_get_node(Hashmap* map, uint32_t hash,
             return i;
         }
     }
+    return -1;
+}
+
+int Hashmap_set(Hashmap* map, void* key, void* data)
+{
+    uint32_t hash = 0;
+    DArray* bucket = Hashmap_find_bucket(map, key, 1, &hash);
+    check(bucket, "Error: can't create bucket.");
+    // Check if data already exists first:
+    int existing_node_pos = Hashmap_get_node(map, hash, bucket, key);
+    if (existing_node_pos == -1) {
+        HashmapNode* node = Hashmap_node_create(hash, key, data);
+        check_mem(node);
+        DArray_push(bucket, node);
+        return 0;
+    } else {
+        HashmapNode* node = DArray_get(bucket, existing_node_pos);
+        node->data = data;
+        return 1;
+    }
+error:
     return -1;
 }
 
@@ -158,6 +166,22 @@ int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb)
         }
     }
     return 0;
+}
+
+int Hashmap_count(Hashmap* map)
+{
+    check_mem(map);
+    int declared_buckets = 0;
+    int i = 0;
+    for(i = 0; i < DArray_count(map->buckets); i++) {
+        DArray* bucket = DArray_get(map->buckets, i);
+        if (bucket) {
+            declared_buckets += DArray_count(bucket);
+        }
+    }
+    return declared_buckets;
+error:
+    return -1;
 }
 
 void* Hashmap_delete(Hashmap* map, void* key)
