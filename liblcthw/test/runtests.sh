@@ -22,7 +22,7 @@ do
             echo $HORIZONTAL_RULE >> test/tests.log
         else
             echo "ERROR in $i."
-            ((ERRORS++))
+            ERRORS=`expr $ERRORS + 1`
             break
         fi
     fi
@@ -34,7 +34,7 @@ echo $DASH_RULE
 # If there were errors, show the log and exit with an error code:
 if [ $ERRORS -gt 0 ]
 then
-    echo -e "\t$ERRORS tests FAILED, here's tests/tests.log:"
+    echo "\t$ERRORS tests FAILED, here's tests/tests.log:"
     cat test/tests.log
     exit 1
 fi

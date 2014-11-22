@@ -70,7 +70,7 @@ test: $(TESTS)
 	@touch ./test/tests.log
 	@TEST_PAT=*_test$(EXE_EXT) $(TESTSCRIPT)
 
-$(TESTS): $(TEST_OBJ)
+$(TESTS): $(TEST_OBJ) $(SO_TARGET)
 	$(CC) -o $@ $(patsubst %,%.o,$@) $(TARGET) $(LIBS)
 
 $(TEST_OBJ): $(TEST_H)
