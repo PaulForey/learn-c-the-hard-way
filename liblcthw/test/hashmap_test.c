@@ -70,6 +70,14 @@ char* test_traverse()
     return NULL;
 }
 
+char* test_bstring()
+{
+    bstring result = Hashmap_bstring(map);
+    printf("%s\n", bdata(result));
+    bdestroy(result);
+    return NULL;
+}
+
 char* test_delete()
 {
     bstring deleted = (bstring)Hashmap_delete(map, &test1);
@@ -155,6 +163,7 @@ char* all_tests()
     mu_run_test(test_create);
     mu_run_test(test_get_set);
     mu_run_test(test_traverse);
+    mu_run_test(test_bstring);
     mu_run_test(test_delete);
     mu_run_test(test_count);
     mu_run_test(test_insert_duplicates);

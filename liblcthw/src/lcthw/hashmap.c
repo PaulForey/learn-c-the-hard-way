@@ -179,9 +179,53 @@ int Hashmap_count(Hashmap* map)
             declared_buckets += DArray_count(bucket);
         }
     }
+    debug("declared_buckets: %d", declared_buckets);
     return declared_buckets;
 error:
     return -1;
+}
+
+bstring Hashmap_bstring(Hashmap* map)
+{
+    bstring pair_separator = bfromcstr("; ");
+    bstring key_value_separator = bfromcstr(": ");
+    bstring ender = bfromcstr("}");
+    check_mem(map);
+    bstring result = bfromcstr("{");
+    int i = 0;
+    int j = 0;
+    int rc;
+    for(i = 0; i < DArray_count(map->buckets); i++) {
+        DArray* bucket = DArray_get(map->buckets, i);
+        if(bucket) {
+            for(j = 0; j < DArray_count(bucket); j++) {
+                HashmapNode* node = DArray_get(bucket, j);
+                if(node) {
+                    rc = bconcat(result, node->key); 
+                    check(rc == 0, "Error concantenating strings");
+                    rc = bconcat(result, key_value_separator); 
+                    check(rc == 0, "Error concantenating strings");
+                    rc = bconcat(result, node->data); 
+                    check(rc == 0, "Error concantenating strings");
+                    rc = bconcat(result, pair_separator); 
+                    check(rc == 0, "Error concantenating strings");
+                }
+            }
+        }
+    }
+    
+    rc = btrunc(result, blength(result)-2);
+    check(rc == 0, "Error truncating result string");
+    
+    rc = bconcat(result, ender); 
+    check(rc == 0, "Error concantenating strings");
+    
+    bdestroy(pair_separator);
+    bdestroy(key_value_separator);
+    bdestroy(ender);
+    return result;
+error:
+    return NULL;
 }
 
 void* Hashmap_delete(Hashmap* map, void* key)

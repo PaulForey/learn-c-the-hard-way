@@ -25,6 +25,7 @@ int Hashmap_set(Hashmap *map, void* key, void* data);
 void* Hashmap_get(Hashmap* map, void* key);
 int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb);
 int Hashmap_count(Hashmap* map);
+bstring Hashmap_bstring(Hashmap* map);
 void* Hashmap_delete(Hashmap* map, void* key);
 
 #endif //_lcthw_Hashmap_h
