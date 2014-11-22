@@ -166,7 +166,7 @@ void DArray_print(DArray* array)
 {
     printf("Printing DArray %p:\n", array);
     int i = 0;
-    printf("\tEnd: %i\tMax: %i\n\tElement Size: %d\tExpand Rate: %d\n",
+    printf("\tEnd: %i\tMax: %i\n\tElement Size: %zd\tExpand Rate: %zd\n",
             array->end, array->max, array->element_size, array->expand_rate);
     for(i = 0; (i < 30) && (i < array->end); i++) {
         printf("\t%i:\t%s\n", i, (char*)array->contents[i]);

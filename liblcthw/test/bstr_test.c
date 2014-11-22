@@ -144,7 +144,7 @@ char* test_bstring_assign()
     for(i = 0; i < STRING_2_LENGTH; i++) {
         test_block[i] = bdata(test_string_1)[rand() % blength(test_string_1)];
     }
-    test_block[STRING_2_LENGTH] = '\0';
+    test_block[STRING_2_LENGTH-1] = '\0';
     res = bassignblk(test_string_2, test_block, STRING_2_LENGTH);
     mu_assert(res == BSTR_OK, "bassignblk failed");
 
