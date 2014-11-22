@@ -43,6 +43,8 @@ SO_TARGET=$(patsubst %.a,%$(SO_EXT),$(TARGET))
 # The Target Build
 all: $(TARGET) $(SO_TARGET) test
 
+notest: $(TARGET) $(SO_TARGET)
+
 dev: CFLAGS += -DDEBUG
 dev: all
 
