@@ -2,6 +2,7 @@
 #include <dbg.h>
 #include <bstrlib.h>
 #include <lcthw/hashmap.h>
+#include <lcthw/hashmap_algos.h>
 
 static int default_compare(void* a, void* b)
 {
@@ -12,29 +13,13 @@ static int default_compare(void* a, void* b)
  * Simple Bob Jenkin's hash algorithm taken
  * from the Wikipedia description.
  */
-static uint32_t default_hash(void* a)
-{
-    size_t len = blength((bstring)a);
-    char* key = bdata((bstring)a);
-    uint32_t hash = 0;
-    uint32_t i = 0;
-    for(hash = i = 0; i < len; ++i) {
-        hash += key[i];
-        hash += (hash << 10);
-        hash ^= (hash >> 6);
-    }
-    hash += (hash << 3);
-    hash ^= (hash >> 11);
-    hash += (hash << 15);
-    return hash;
-}
 
 Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 {
     Hashmap* map = calloc(1, sizeof(Hashmap));
     check_mem(map);
     map->compare = compare == NULL ? default_compare : compare;
-    map->hash = hash == NULL ? default_hash : hash;
+    map->hash = hash == NULL ? Hashmap_default_hash : hash;
     map->buckets = DArray_create(sizeof(DArray*), DEFAULT_NUMBER_OF_BUCKETS);
     map->buckets->end = map->buckets->max; // Fake out expanding it.
     check_mem(map->buckets);
