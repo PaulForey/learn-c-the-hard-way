@@ -49,7 +49,7 @@ char* test_binstr_performance()
         elapsed = time(NULL) - start;
     } while (elapsed <= TEST_TIME);
     
-    debug("BINSTR COUNT: %lu, END TIME: %d, OPS: %f",
+    printf("BINSTR COUNT: %lu, END TIME: %d, OPS: %f\n",
             find_count, (int)elapsed, (double)find_count / elapsed);
             
     return NULL;
@@ -72,7 +72,7 @@ char* test_find_performance()
         elapsed = time(NULL) - start;
     } while (elapsed <= TEST_TIME);
     
-    debug("FIND COUNT: %lu, END TIME: %d, OPS: %f",
+    printf("FIND COUNT: %lu, END TIME: %d, OPS: %f\n",
             find_count, (int)elapsed, (double)find_count / elapsed);
             
     return NULL;
@@ -100,7 +100,7 @@ char* test_scan_performance()
         elapsed = time(NULL) - start;
     } while(elapsed <= TEST_TIME);
     
-    debug("SCAN COUNT: %lu, END TIME: %d, OPS: %f",
+    printf("SCAN COUNT: %lu, END TIME: %d, OPS: %f\n",
             find_count, (int)elapsed, (double)find_count/elapsed);
     
     StringScanner_destroy(scan);
@@ -113,12 +113,11 @@ char* all_tests()
     mu_suite_start();
     mu_run_test(test_find_and_scan);
     
-    // comment out pre-processer directives to actually run the time-based tests.
-//#if 0
+#if FULLTEST
     mu_run_test(test_scan_performance);
     mu_run_test(test_find_performance);
     mu_run_test(test_binstr_performance);
-//#endif // if 0
+#endif
 
     return NULL;
 }

@@ -45,6 +45,9 @@ all: $(TARGET) $(SO_TARGET) test
 
 notest: $(TARGET) $(SO_TARGET)
 
+fulltest: CFLAGS += -DFULLTEST
+fulltest: all
+
 dev: CFLAGS += -DDEBUG
 dev: all
 

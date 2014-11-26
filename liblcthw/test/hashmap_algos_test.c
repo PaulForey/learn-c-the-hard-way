@@ -172,7 +172,9 @@ char* all_tests()
     mu_run_test(test_adler32);
     mu_run_test(test_djb);
     mu_run_test(test_pfa);
+#if FULLTEST
     mu_run_test(test_distribution);
+#endif
     
     return NULL;
 }
