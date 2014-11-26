@@ -135,8 +135,10 @@ char* all_tests()
 {
         mu_suite_start();
 
+#if FULLTEST
         mu_run_test(list_bubble_sort_time);
         mu_run_test(list_merge_sort_time);
+#endif
 
         return NULL;
 }
