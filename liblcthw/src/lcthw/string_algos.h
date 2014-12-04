@@ -1,5 +1,5 @@
-#ifndef string_algos_h
-#define string_algos_h
+#ifndef _lcthw_string_algos_h
+#define _lcthw_string_algos_h
 
 #include <bstrlib.h>
 #include <lcthw/darray.h>
@@ -21,4 +21,4 @@ int StringScanner_scan(StringScanner* scan, bstring tofind);
 
 void StringScanner_destroy(StringScanner* scan);
 
-#endif // string_algos_h
+#endif // _lcthw_string_algos_h

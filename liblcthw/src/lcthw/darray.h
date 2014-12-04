@@ -1,5 +1,5 @@
-#ifndef _DArray_h
-#define _DArray_h
+#ifndef _lcthw_DArray_h
+#define _lcthw_DArray_h
 #include <stdlib.h>
 #include <assert.h>
 #include <dbg.h>
@@ -67,4 +67,4 @@ void DArray_print(DArray* array);
 void DArray_debug(DArray* array);
 
 #define DArray_free(E) free((E))
-#endif // _DArray_H
+#endif // _lcthw_DArray_H

@@ -1,5 +1,5 @@
-#ifndef _radixmap_h
-#define _radixmap_h
+#ifndef _lcthw_RadixMap_h
+#define _lcthw_RadixMap_h
 
 #include <stdint.h>
 typedef	union RMElement {
@@ -25,4 +25,4 @@ RMElement* RadixMap_find(RadixMap* map, uint32_t key_to_find);
 int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value);
 int RadixMap_delete(RadixMap* map, RMElement* element);
 
-#endif //_radixmap_h
+#endif // _lcthw_RadixMap_h

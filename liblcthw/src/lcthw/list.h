@@ -1,5 +1,5 @@
-#ifndef lcthw_List_h
-#define lcthw_List_h
+#ifndef _lcthw_List_h
+#define _lcthw_List_h
 #include <stdlib.h>
 
 // An internal macro to check the validity of a List:
@@ -145,4 +145,4 @@ void List_print(List* list);
  */
 void List_debug(List* list);
 
-#endif // lcthw_List_h
+#endif // _lcthw_List_h
