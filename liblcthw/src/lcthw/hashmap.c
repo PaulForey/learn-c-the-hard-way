@@ -9,11 +9,6 @@ static int default_compare(void* a, void* b)
     return bstrcmp((bstring)a, (bstring)b);
 }
 
-/**
- * Simple Bob Jenkin's hash algorithm taken
- * from the Wikipedia description.
- */
-
 Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 {
     Hashmap* map = calloc(1, sizeof(Hashmap));

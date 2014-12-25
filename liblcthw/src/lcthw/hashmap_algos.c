@@ -1,6 +1,10 @@
 #include <lcthw/hashmap_algos.h>
 #include <bstrlib.h>
 
+/**
+ * Simple Bob Jenkin's hash algorithm taken
+ * from the Wikipedia description.
+ */
 uint32_t Hashmap_default_hash(void* data)
 {
     size_t len = blength((bstring)data);
