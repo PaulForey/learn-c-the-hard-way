@@ -34,8 +34,8 @@ echo $DASH_RULE
 # If there were errors, show the log and exit with an error code:
 if [ $ERRORS -gt 0 ]
 then
-    echo "\t$ERRORS tests FAILED, here's tests/tests.log:"
-    cat test/tests.log
+    echo "\t$ERRORS tests FAILED, here's the last 1000 lines of tests/tests.log:"
+    tail -n 1000 test/tests.log
     exit 1
 fi
 
