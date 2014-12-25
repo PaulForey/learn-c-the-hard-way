@@ -8,11 +8,6 @@ static int default_compare(void* a, void* b)
     return bstrcmp((bstring)a, (bstring)b);
 }
 
-static int hash_compare(void* a, void* b)
-{
-    return (a < b) ? -1 : (a > b);
-}
-
 BSTree* BSTree_create(BSTree_compare compare)
 {
     BSTree* map = calloc(1, sizeof(BSTree));

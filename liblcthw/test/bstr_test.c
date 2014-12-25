@@ -41,7 +41,7 @@ char* test_bstring_blk2bstr()
     test_block[6] = '\0';
     bstring string_block = blk2bstr(test_block, STRING_1_LENGTH);
     mu_assert(string_block != NULL, "bstring block creation failed");
-    printf("The bstring block is: %s\n", bdata(string_block));
+    debug("The bstring block is: %s", bdata(string_block));
 
     mu_assert(blength(string_block) == STRING_1_LENGTH,
             "the block has got the wrong length");
@@ -61,7 +61,7 @@ char* test_bstring_functions()
     bstring test_string_3 = bfromcstr(STRING_2);
     mu_assert(test_string_3 != NULL, "string 3 creation failed");
 
-    printf("String 1 is: %s\n", bdata(test_string_1));
+    debug("String 1 is: %s", bdata(test_string_1));
 
     int res = biseq(test_string_1, test_string_2);
     mu_assert(res == 1, "strings aren't equal");
@@ -71,7 +71,7 @@ char* test_bstring_functions()
     mu_assert(blength(test_string_1) == STRING_1_LENGTH*2,
             "length is wrong");
 
-    printf("String 1 is now: %s\n", bdata(test_string_1));
+    debug("String 1 is now: %s", bdata(test_string_1));
 
     res = biseq(test_string_1, test_string_2);
     mu_assert(res == 0, "strings are equal when they shouldn't be");
@@ -79,16 +79,16 @@ char* test_bstring_functions()
     // second argument is position to start search:
     res = binstr(test_string_3, 0, test_string_2);
     mu_assert(res != BSTR_ERR, "Target string not found!");
-    printf("Target string found at pos: %i\n", res);
+    debug("Target string found at pos: %i", res);
 
 
     bstring found_string = bmidstr(test_string_3, res,
             blength(test_string_2));
     mu_assert(found_string != NULL, "substring failed");
-    printf("Target string first char: %c\n", bchar(found_string, 0)); 
-    printf("Target string last char: %c\n", bchar(found_string,
+    debug("Target string first char: %c", bchar(found_string, 0)); 
+    debug("Target string last char: %c", bchar(found_string,
                 STRING_1_LENGTH-1));
-    printf("Target string found: %s\n", bdata(found_string));
+    debug("Target string found: %s", bdata(found_string));
 
 
     bdestroy(test_string_1);
@@ -120,20 +120,20 @@ char* test_bstring_assign()
     bstring test_string_1 = bfromcstr(STRING_1);
     bstring test_string_2 = bfromcstr(STRING_2);
 
-    printf("String 1: %s\n", bdata(test_string_1));
-    printf("String 2: %s\n", bdata(test_string_2));
+    debug("String 1: %s", bdata(test_string_1));
+    debug("String 2: %s", bdata(test_string_2));
 
     int res = bassign(test_string_2, test_string_1); 
     mu_assert(res == BSTR_OK, "bassign failed");
     mu_assert(bstrcmp(test_string_1, test_string_2) == 0,
             "test strings aren't equal");
 
-    printf("String 2 now: %s\n", bdata(test_string_2));
+    debug("String 2 now: %s", bdata(test_string_2));
 
     res = bassigncstr(test_string_1, STRING_2);
     mu_assert(res == BSTR_OK, "bassigncstr failed");
     
-    printf("String 1 now: %s\n", bdata(test_string_1));
+    debug("String 1 now: %s", bdata(test_string_1));
 
     //get seconds since the epoch for random seed
     time_t time_now = time(NULL);
@@ -151,7 +151,7 @@ char* test_bstring_assign()
     mu_assert(bstrcmp(test_string_1, test_string_2) != 0,
             "test strings are equal when they shouldn't be");
 
-    printf("String 2 now: %s\n", bdata(test_string_2));
+    debug("String 2 now: %s", bdata(test_string_2));
 
     free(test_block);
     bdestroy(test_string_1);
@@ -171,14 +171,14 @@ char* test_bstring_find()
     answer_before = bformat("Replacing string:\t'%s'\n\twith string:\t'%s'\n\tin string:\t'%s'\n", bdata(test_find),
             bdata(test_replace), bdata(test_string));
 
-    printf("%s", bdata(answer_before));
+    debug("%s", bdata(answer_before));
     int res = bfindreplace(test_string, test_find, test_replace, 0);
     mu_assert(res == BSTR_OK, "findreplace failed");
 
     answer_after = bformat("Replaced okay.\n\tResult string:\t'%s'\n",
             bdata(test_string));
 
-    printf("%s", bdata(answer_after));
+    debug("%s", bdata(answer_after));
 
     bdestroy(test_string);
     bdestroy(test_find);

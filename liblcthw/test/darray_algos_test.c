@@ -35,13 +35,13 @@ char* test_qsort()
 {
     DArray* words = create_words();
     DArray_check(words);
-    DArray_print(words);
+    //DArray_print(words);
     mu_assert(words != NULL, "Failed to create words.");
     mu_assert(!is_sorted(words), "Words should not start sorted.");
     debug("--- Testing qsort sorting algorithm");
     int rc = DArray_qsort(words, (DArray_compare)testcmp);
     DArray_check(words);
-    DArray_print(words);
+    //DArray_print(words);
     mu_assert(rc == 0, "qsort failed");
     mu_assert(is_sorted(words), "Words not sorted.");
     DArray_destroy(words);
@@ -61,14 +61,14 @@ char* test_mergesort()
 {
     DArray* words = create_words();
     DArray_check(words);
-    DArray_print(words);
+    //DArray_print(words);
     mu_assert(words != NULL, "Failed to create words.");
     mu_assert(!is_sorted(words), "Words should not start sorted.");
     debug("--- Testing mergesort sorting algorithm");
     DArray* result = DArray_mergesort(words, (DArray_compare)testcmp);
     mu_assert(result != NULL, "sort failed");
     DArray_check(result);
-    DArray_print(result);
+    //DArray_print(result);
     mu_assert(is_sorted(result), "Words not sorted.");
     DArray_destroy(words);
     DArray_destroy(result);
