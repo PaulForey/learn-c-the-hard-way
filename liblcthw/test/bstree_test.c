@@ -1,5 +1,6 @@
 #include "minunit.h"
 #include <lcthw/bstree.h>
+#include <lcthw/hashmap_algos.h>
 #include <assert.h>
 #include <bstrlib.h>
 #include <stdlib.h>
@@ -112,32 +113,35 @@ char* test_delete()
     return NULL;
 }
 
+#define FUZZ_SIZE 100
 
 char* test_fuzzing()
 {
     BSTree* store = BSTree_create(NULL);
     int i = 0;
     int j = 0;
-    bstring numbers[100] = {NULL};
-    bstring data[100] = {NULL};
+    bstring numbers[FUZZ_SIZE] = {NULL};
+    bstring data[FUZZ_SIZE] = {NULL};
+
     srand((unsigned int)time(NULL));
     
     int num;
-    
-    for(i = 0; i < 100; i++) {
+
+    for (i = 0; i < FUZZ_SIZE; i++) {
         num = rand();
         numbers[i] = bformat("%d", num);
         data[i] = bformat("data %d", num);
         BSTree_set(store, numbers[i], data[i]);
     }
-    
-    for (i = 0; i < 100; i++) {
+
+    for (i = 0; i < FUZZ_SIZE; i++) {
         bstring value = BSTree_delete(store, numbers[i]);
         mu_assert(value == data[i], "Failed to delete the right number.");
         
-        mu_assert(BSTree_delete(store, numbers[i]) == NULL, "Should get nothing");
+        mu_assert(BSTree_delete(store, numbers[i]) == NULL,
+                                        "Should get nothing");
         
-        for(j = i+1; j < 99-i; j++) {
+        for (j = i+1; j < FUZZ_SIZE-1-i; j++) {
             bstring value = BSTree_get(store, numbers[j]);
             mu_assert(value == data[j], "Failed to get the right number.");
         }
@@ -145,22 +149,181 @@ char* test_fuzzing()
         bdestroy(value);
         bdestroy(numbers[i]);
     }
+
+    BSTree_destroy(store);
+    
+    return NULL;
+}
+
+
+static int hash_compare(void* a, void* b)
+{
+    return (a < b) ? -1 : (a > b);
+}
+
+char* test_christhash_tree() // Christmas tree! Geddit?
+{
+    BSTree* hash_tree = BSTree_create(hash_compare);
+    mu_assert(hash_tree != NULL, "Failed to create hash_tree.");
+
+    uint32_t hash1 = Hashmap_default_hash(&test1);
+    int res = BSTree_set(hash_tree, &hash1, &expect1);
+    mu_assert(res == 0, "Failed to set hash1 in tree.");
+
+    bstring result = BSTree_get(hash_tree, &hash1);
+    mu_assert(result == &expect1, "hash1 data not proper.");
+
+    result = BSTree_delete(hash_tree, &hash1);
+    mu_assert(result == &expect1, "hash1 data not proper.");
+
+    BSTree_destroy(hash_tree);
+
+    return NULL;
+}
+
+char* test_hash_fuzzing()
+{
+    BSTree* store = BSTree_create(hash_compare);
+    int i = 0;
+    int j = 0;
+    uint32_t numbers[FUZZ_SIZE] = {0};
+    bstring data[FUZZ_SIZE] = {NULL};
+
+    srand((unsigned int)time(NULL));
+    
+    int num;
+    
+    for(i = 0; i < FUZZ_SIZE; i++) {
+        num = rand();
+        numbers[i] = Hashmap_default_hash(bformat("%d", num));
+        data[i] = bformat("data %d", num);
+        BSTree_set(store, &numbers[i], data[i]);
+    }
+    
+    for (i = 0; i < FUZZ_SIZE; i++) {
+        bstring value = BSTree_delete(store, &numbers[i]);
+        mu_assert(value == data[i], "Failed to delete the right number.");
+        
+        mu_assert(BSTree_delete(store, &numbers[i]) == NULL,
+                                      "Should get nothing");
+        
+        for(j = i+1; j < FUZZ_SIZE-1-i; j++) {
+            bstring value = BSTree_get(store, &numbers[j]);
+            mu_assert(value == data[j], "Failed to get the right number.");
+        }
+        
+        bdestroy(value);
+    }
     
     BSTree_destroy(store);
     
     return NULL;
 }
 
+#define TEST_TIME 1
+#define ARRAY_SIZE 80000
+
+char* test_string_key_speed()
+{
+    BSTree* tree = BSTree_create(NULL);
+
+    bstring keys[ARRAY_SIZE] = {NULL};
+    bstring values[ARRAY_SIZE] = {NULL};
+
+    time_t start_time;
+    time_t elapsed_time;
+    // Use the time as the random seed and store it as start time.
+    srand((unsigned int)time(&start_time));
+
+    int num;
+    int i = 0;
+
+    do {
+        mu_assert(i < ARRAY_SIZE, "i is too big for test array.")
+        num = rand();
+        keys[i] = bformat("%d", num);
+        values[i] = bformat("data %d", num);
+        BSTree_set(tree, keys[i], values[i]);
+        
+        i++;
+        elapsed_time = time(NULL) - start_time;
+    } while (elapsed_time < TEST_TIME);
+
+    int data_size = i;
+
+    printf("string key:\tDATA SIZE: %d\tTIME: %d\t OPS: %f\n",
+            data_size,
+            (int)elapsed_time,
+            (double)data_size/elapsed_time);
+
+    for (i = 0; i < data_size; i++) {
+        bdestroy(keys[i]);
+        bdestroy(values[i]);
+    }
+
+    BSTree_destroy(tree);
+
+    return NULL;
+}
+
+char* test_hash_key_speed()
+{
+    BSTree* tree = BSTree_create(hash_compare);
+
+    uint32_t keys[ARRAY_SIZE] = {0};
+    bstring values[ARRAY_SIZE] = {NULL};
+
+    time_t start_time;
+    time_t elapsed_time;
+    // Use the time as the random seed and store it as start time.
+    srand((unsigned int)time(&start_time));
+
+    int num;
+    int i = 0;
+
+    do {
+        mu_assert(i < ARRAY_SIZE, "i is too big for test array.")
+        num = rand();
+        //bformat("%d", num);
+        keys[i] = Hashmap_default_hash(bformat("%d", num));
+        values[i] = bformat("data %d", num);
+        BSTree_set(tree, &keys[i], values[i]);
+        
+        i++;
+        elapsed_time = time(NULL) - start_time;
+    } while (elapsed_time < TEST_TIME);
+
+    int data_size = i;
+
+    printf("hash key:\tDATA SIZE: %d\tTIME: %d\t OPS: %f\n",
+            data_size,
+            (int)elapsed_time,
+            (double)data_size/elapsed_time);
+
+    for (i = 0; i < data_size; i++) {
+        bdestroy(values[i]);
+    }
+
+    BSTree_destroy(tree);
+
+    return NULL;
+}
 char* all_tests()
 {
     mu_suite_start();
     
+//#ifdef whatever
     mu_run_test(test_create);
     mu_run_test(test_get_set);
     mu_run_test(test_traverse);
     mu_run_test(test_delete);
     mu_run_test(test_destroy);
+    mu_run_test(test_christhash_tree);
+    mu_run_test(test_string_key_speed);
+    mu_run_test(test_hash_key_speed);
+//#endif
     mu_run_test(test_fuzzing);
+    mu_run_test(test_hash_fuzzing);
     
     return NULL;
 }
