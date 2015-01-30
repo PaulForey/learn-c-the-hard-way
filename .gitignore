@@ -14,3 +14,5 @@
 !Makefile
 
 edit.sh
+liblcthw/test/hashmap_algos_test_results.txt
+.c9
