@@ -158,7 +158,10 @@ char* test_fuzzing()
 
 static int hash_compare(void* a, void* b)
 {
-    return (a < b) ? -1 : (a > b);
+    int _a = *(int*)a; int _b = *(int*)b;
+    int result = (_a < _b) ? -1 : (_a > _b);
+    //debug("a: %d; b: %d; Result: %d", _a, _b, result);
+    return result;
 }
 
 char* test_christhash_tree() // Christmas tree! Geddit?
@@ -230,33 +233,52 @@ char* test_string_key_speed()
     bstring keys[ARRAY_SIZE] = {NULL};
     bstring values[ARRAY_SIZE] = {NULL};
 
-    time_t start_time;
-    time_t elapsed_time;
-    // Use the time as the random seed and store it as start time.
-    srand((unsigned int)time(&start_time));
+    struct timespec start_time;
+    struct timespec end_time;
+
+    // Use the time as the random seed.
+    srand((unsigned int)time(NULL));
 
     int num;
-    int i = 0;
+    int i;
 
-    do {
-        mu_assert(i < ARRAY_SIZE, "i is too big for test array.")
+    // Get the time. Thoroughly.
+    int rc = clock_gettime(CLOCK_MONOTONIC, &start_time);
+    mu_assert(rc == 0, "Failed to get start time.");
+
+    for(i = 0; i < ARRAY_SIZE; i++) {
         num = rand();
         keys[i] = bformat("%d", num);
         values[i] = bformat("data %d", num);
         BSTree_set(tree, keys[i], values[i]);
-        
-        i++;
-        elapsed_time = time(NULL) - start_time;
-    } while (elapsed_time < TEST_TIME);
+    }
 
-    int data_size = i;
+    rc = clock_gettime(CLOCK_MONOTONIC, &end_time);
+    mu_assert(rc == 0, "Failed to get end_time");
 
-    printf("string key:\tDATA SIZE: %d\tTIME: %d\t OPS: %f\n",
-            data_size,
-            (int)elapsed_time,
-            (double)data_size/elapsed_time);
+    long double time_result = get_time_difference(start_time, end_time);
+    printf("Time it took to set_up BSTree with %d string keys:\t%.10Lf\n",
+                                              ARRAY_SIZE,
+                                              time_result);
 
-    for (i = 0; i < data_size; i++) {
+    rc = clock_gettime(CLOCK_MONOTONIC, &start_time);
+    mu_assert(rc == 0, "Failed to get start time.");
+
+    // Loop and get all the items (Do The Thing!)
+    for (i = 0; i < ARRAY_SIZE; i++) {
+        BSTree_get(tree, keys[i]);
+    }
+
+    rc = clock_gettime(CLOCK_MONOTONIC, &end_time);
+    mu_assert(rc == 0, "Failed to get end_time");
+
+    time_result = get_time_difference(start_time, end_time);
+    printf("Time it took to do %d BSTree_get with string keys:\t%.10Lf\n",
+                                              ARRAY_SIZE,
+                                              time_result);
+
+    // Clean up
+    for (i = 0; i < ARRAY_SIZE; i++) {
         bdestroy(keys[i]);
         bdestroy(values[i]);
     }
@@ -273,34 +295,48 @@ char* test_hash_key_speed()
     uint32_t keys[ARRAY_SIZE] = {0};
     bstring values[ARRAY_SIZE] = {NULL};
 
-    time_t start_time;
-    time_t elapsed_time;
-    // Use the time as the random seed and store it as start time.
-    srand((unsigned int)time(&start_time));
+    struct timespec start_time;
+    struct timespec end_time;
 
+    // Use the time as the random seed.
+    srand((unsigned int)time(NULL));
     int num;
     int i = 0;
 
-    do {
+    int rc = clock_gettime(CLOCK_MONOTONIC, &start_time);
+    mu_assert(rc == 0, "Failed to get start time.");
+
+    for(i = 0; i < ARRAY_SIZE; i++) {
         mu_assert(i < ARRAY_SIZE, "i is too big for test array.")
         num = rand();
-        //bformat("%d", num);
         keys[i] = Hashmap_default_hash(bformat("%d", num));
         values[i] = bformat("data %d", num);
         BSTree_set(tree, &keys[i], values[i]);
-        
-        i++;
-        elapsed_time = time(NULL) - start_time;
-    } while (elapsed_time < TEST_TIME);
+    }
 
-    int data_size = i;
+    rc = clock_gettime(CLOCK_MONOTONIC, &end_time);
+    mu_assert(rc == 0, "Failed to get end_time");
 
-    printf("hash key:\tDATA SIZE: %d\tTIME: %d\t OPS: %f\n",
-            data_size,
-            (int)elapsed_time,
-            (double)data_size/elapsed_time);
+    long double time_result = get_time_difference(start_time, end_time);
+    printf("Time it took to set_up BSTree with %d hash keys:\t%.10Lf\n",
+                                              ARRAY_SIZE,
+                                              time_result);
 
-    for (i = 0; i < data_size; i++) {
+    rc = clock_gettime(CLOCK_MONOTONIC, &start_time);
+    mu_assert(rc == 0, "Failed to get start time.");
+
+    for (i = 0; i < ARRAY_SIZE; i++) {
+        BSTree_get(tree, &keys[i]);
+    }
+
+    rc = clock_gettime(CLOCK_MONOTONIC, &end_time);
+    mu_assert(rc == 0, "Failed to get end_time");
+
+    time_result = get_time_difference(start_time, end_time);
+    printf("Time it took to do %d BSTree_get with hash keys:\t%.10Lf\n",
+                                              ARRAY_SIZE,
+                                              time_result);
+    for (i = 0; i < ARRAY_SIZE; i++) {
         bdestroy(values[i]);
     }
 
@@ -319,11 +355,11 @@ char* all_tests()
     mu_run_test(test_delete);
     mu_run_test(test_destroy);
     mu_run_test(test_christhash_tree);
-    mu_run_test(test_string_key_speed);
-    mu_run_test(test_hash_key_speed);
-//#endif
     mu_run_test(test_fuzzing);
     mu_run_test(test_hash_fuzzing);
+//#endif
+    mu_run_test(test_string_key_speed);
+    mu_run_test(test_hash_key_speed);
     
     return NULL;
 }
