@@ -58,9 +58,13 @@ int List_timed_sort(List_sort_method list_cmp, char* sort_name, int iterations)
         }
         free(list_res_array);
 
+        /*
         int res_stime = difftime(time_two.tv_sec, time_one.tv_sec);
         long double res_ntime = time_two.tv_nsec - time_one.tv_nsec;
         long double res_time = (res_ntime/1000000000) + res_stime;
+        */
+
+        long double res_time = get_time_difference(time_one, time_two);
 
         /*
         printf("Difference in seconds: %.0f\n", res_stime);

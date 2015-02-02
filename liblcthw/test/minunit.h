@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <dbg.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define mu_suite_start() char* message = NULL;
 #define mu_assert(test, message) \
@@ -36,6 +37,13 @@
         } \
         exit(result != 0); \
     }
+
+inline long double get_time_difference(struct timespec time_one,
+                                       struct timespec time_two) {
+    int res_stime = difftime(time_two.tv_sec, time_one.tv_sec);
+    long double res_ntime = time_two.tv_nsec - time_one.tv_nsec;
+    return (res_ntime/1000000000) + res_stime;
+}
 
 int tests_run;
 
